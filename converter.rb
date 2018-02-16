@@ -7,15 +7,53 @@ class Converter
   @@edges = []
 
   def self.csv_to_json(input, output)
-    binding.pry
-    data = File.open(input).read
+    rows = []
+    CSV.foreach(input) do |row|
+      rows.push(row.join.split(';'))
+    end
+    # Create nodes
+    nodes = []
+    current_row = 1 # Skip header
+    next_line_size = 500 # Value just to enter loop
+    # Loop until find line break
+    while next_line_size > 0
+      new_node = {}
+      new_node['id'] = rows[current_row][0]
+      new_node['name'] = rows[current_row][1]
+      new_node['x'] = rows[current_row][2]
+      new_node['y'] = rows[current_row][3]
+      new_node['size'] = rows[current_row][4]
+      nodes.push(new_node)
+      current_row += 1
+      next_line_size = rows[current_row].size
+    end
+
+    # Create edges
+
+    # Find edges header
+    while rows[current_row][0] != "Graph"
+      current_row += 1
+      break if current_row > 1000
+    end
+    current_row += 1 # Skip header
+    edges = []
+    next_line_size = 500
+    while next_line_size > 0
+
+
+      new_edge = {}
+      new_edge['source'] = rows[current_row][1]
+      new_edge['source'] = rows[current_row][1]
+      new_edge['source'] = rows[current_row][1]
+
+      current_row += 1
+    end
 
     CSV.parse(data).to_json
 
   end
 
   def self.json_to_csv(input, output)
-    binding.pry
     file = File.read(input)
     data_hash = JSON.parse(file)
 
@@ -80,14 +118,24 @@ class Converter
 
   end
 
-  def self.create_node(label, x, y, size)
+  # def self.create_node(id, label, x, y, size)
+  #   node = {}
+  #   node['id'] = id
+  #   node['label'] = label
+  #   node['x'] = x
+  #   node['y'] = y
+  #   node['size'] = size
+  #   node
+  # end
 
-  end
-
-  def self.create_edge(source, target)
-
-  end
+  # def self.create_edge(source, target, dist)
+  #   edge = {}
+  #   edge['source'] = source
+  #   edge['target'] = target
+  #   edge['dist'] = dist
+  #   edge
+  # end
 end
 
-#Converter.csv_to_json('public/noroeste.csv', 'xd.json')
-Converter.json_to_csv('public/graph.json', 'lala.csv')
+Converter.csv_to_json('public/noroeste.csv', 'xd.json')
+# Converter.json_to_csv('public/graph.json', 'lala.csv')
