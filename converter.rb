@@ -18,11 +18,11 @@ class Converter
     # Loop until find line break
     while next_line_size > 0
       new_node = {}
-      new_node['id'] = rows[current_row][0]
+      new_node['id'] = rows[current_row][0].to_i
       new_node['name'] = rows[current_row][1]
-      new_node['x'] = rows[current_row][2]
-      new_node['y'] = rows[current_row][3]
-      new_node['size'] = rows[current_row][4]
+      new_node['x'] = rows[current_row][2].to_i
+      new_node['y'] = rows[current_row][3].to_i
+      new_node['size'] = rows[current_row][4].to_i
       nodes.push(new_node)
       current_row += 1
       next_line_size = rows[current_row].size
@@ -36,21 +36,32 @@ class Converter
       break if current_row > 1000
     end
     current_row += 1 # Skip header
+    id_row = 0 # node id of current row
     edges = []
     next_line_size = 500
     while next_line_size > 0
-
-
-      new_edge = {}
-      new_edge['source'] = rows[current_row][1]
-      new_edge['source'] = rows[current_row][1]
-      new_edge['source'] = rows[current_row][1]
-
+      (nodes.size - id_row).times do |i|
+        if rows[current_row][i+1+id_row].to_i > 0 # i+1 to skip id column
+          new_edge = {}
+          new_edge['id'] = edges.size
+          new_edge['source'] = id_row
+          new_edge['target'] = i+id_row
+          new_edge['dist'] = rows[current_row][i+1+id_row].to_i
+          edges.push(new_edge)
+        end
+      end
+      id_row += 1
       current_row += 1
+      next_line_size = rows[current_row].size
     end
 
-    CSV.parse(data).to_json
+    full_json = {}
+    full_json['nodes'] = nodes
+    full_json['edges'] = edges
 
+    out = JSON.pretty_generate(full_json)
+
+    File.write(output, out)
   end
 
   def self.json_to_csv(input, output)
@@ -137,5 +148,5 @@ class Converter
   # end
 end
 
-Converter.csv_to_json('public/noroeste.csv', 'xd.json')
+Converter.csv_to_json('public/noroeste.csv', 'public/noroeste.json')
 # Converter.json_to_csv('public/graph.json', 'lala.csv')
