@@ -2,35 +2,35 @@
   "nodes": [
     {
       "id": 0,
-      "name": "Sanza",
+      "label": "Sanza",
       "x": 15,
       "y": 15,
       "size": 1
     },
     {
       "id": 1,
-      "name": "Planaltina",
+      "label": "Planaltina",
       "x": 30,
       "y": 18,
       "size": 1
     },
     {
       "id": 2,
-      "name": "Loanda",
+      "label": "Loanda",
       "x": 16,
       "y": 23,
       "size": 1
     },
     {
       "id": 3,
-      "name": "Sta Monica",
+      "label": "Sta Monica",
       "x": 25,
       "y": 8,
       "size": 1
     },
     {
       "id": 4,
-      "name": "Mt Castelo",
+      "label": "Mt Castelo",
       "x": 8,
       "y": 8,
       "size": 1

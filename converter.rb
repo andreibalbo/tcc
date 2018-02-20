@@ -19,7 +19,7 @@ class Converter
     while next_line_size > 0
       new_node = {}
       new_node['id'] = rows[current_row][0].to_i
-      new_node['name'] = rows[current_row][1]
+      new_node['label'] = rows[current_row][1]
       new_node['x'] = rows[current_row][2].to_i
       new_node['y'] = rows[current_row][3].to_i
       new_node['size'] = rows[current_row][4].to_i
