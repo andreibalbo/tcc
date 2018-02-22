@@ -11,28 +11,28 @@
       "id": 1,
       "label": "Planaltina",
       "x": 30,
-      "y": 18,
+      "y": 12,
       "size": 1
     },
     {
       "id": 2,
       "label": "Loanda",
       "x": 16,
-      "y": 23,
+      "y": 8,
       "size": 1
     },
     {
       "id": 3,
       "label": "Sta Monica",
       "x": 25,
-      "y": 8,
+      "y": 23,
       "size": 1
     },
     {
       "id": 4,
       "label": "Mt Castelo",
       "x": 8,
-      "y": 8,
+      "y": 22,
       "size": 1
     }
   ],
