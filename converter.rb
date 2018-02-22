@@ -6,6 +6,35 @@ class Converter
   @@nodes = []
   @@edges = []
 
+
+  def self.matrix_from_json(input)
+    m = Hash.new
+    inf = Float::INFINITY
+    file = File.read(input)
+    data_hash = JSON.parse(file)
+    edges = data_hash['edges']
+    nodes = data_hash['nodes']
+
+    # Fill matrix with standard values
+    nodes.size.times do |i|
+      nodes.size.times do |j|
+        if i == j
+          m[[i, j]] = 0
+        else
+          m[[i, j]] = inf
+        end
+      end
+    end
+    # Filling with edge values
+    edges.each do |e|
+      m[[e['source'],e['target']]] = e['dist']
+      m[[e['target'],e['source']]] = e['dist']
+    end
+
+    return m
+  end
+
+
   def self.csv_to_json(input, output)
     rows = []
     CSV.foreach(input) do |row|
@@ -148,5 +177,6 @@ class Converter
   # end
 end
 
-Converter.csv_to_json('public/noroeste.csv', 'public/noroeste.json')
+# Converter.csv_to_json('public/noroeste.csv', 'public/noroeste.json')
 # Converter.json_to_csv('public/graph.json', 'lala.csv')
+Converter.matrix_from_json('public/noroeste.json')
