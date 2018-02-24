@@ -129,6 +129,22 @@ class Converter
 
   end
 
+  def self.matrix_to_string(matrix)
+    size = Math.sqrt(matrix.size).to_i
+    string = ''
+    string += "\n"
+
+    size.times do |i|
+      size.times do |j|
+        string += '['
+        string += "#{matrix[[i, j]]}"
+        string += ']'
+      end
+      string += "\n"
+    end
+    return string
+  end
+
   # def self.create_node(id, label, x, y, size)
   #   node = {}
   #   node['id'] = id
@@ -150,4 +166,4 @@ end
 
 # Converter.csv_to_json('public/noroeste.csv', 'public/noroeste.json')
 # Converter.json_to_csv('public/graph.json', 'lala.csv')
-Converter.matrix_from_json('public/noroeste.json')
+# Converter.matrix_from_json('public/noroeste.json')
