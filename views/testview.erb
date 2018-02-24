@@ -45,20 +45,21 @@
 <script src="sigmajs/src/misc/sigma.misc.bindEvents.js"></script>
 <script src="sigmajs/src/misc/sigma.misc.bindDOMEvents.js"></script>
 <script src="sigmajs/src/misc/sigma.misc.drawHovers.js"></script>
-<!-- END SIGMA IMPORTS -->
 <script src="sigmajs/plugins/sigma.parsers.json/sigma.parsers.json.js"></script>
-<div id="container">
-  <style>
-    #graph-container {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      position: absolute;
-    }
-  </style>
-  <div id="graph-container"></div>
-</div>
+<!-- END SIGMA IMPORTS -->
+<head>
+  <title>App</title>
+</head>
+
+<body>
+  <div id="container">
+    <div id="graph-container">
+
+    </div>
+  </div>
+
+</body>
+
 <script>
 /**
  * Here is just a basic example on how to properly display a graph
@@ -78,3 +79,15 @@ sigma.parsers.json('noroeste.json', {
   container: 'graph-container'
 });
 </script>
+
+<style type="text/css">
+  #graph-container {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+  }
+</style>
