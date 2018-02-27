@@ -40,19 +40,48 @@ class Converter
     edges = []
     next_line_size = 500
     while next_line_size > 0
-      (nodes.size - id_row).times do |i|
-        if rows[current_row][i+1+id_row].to_i > 0 # i+1 to skip id column
+      #binding.pry
+      (nodes.size).times do |i|
+        if rows[current_row][i+1].to_i > 0 # i+1 to skip id column
           new_edge = {}
           new_edge['id'] = edges.size
           new_edge['source'] = id_row
-          new_edge['target'] = i+id_row
-          new_edge['dist'] = rows[current_row][i+1+id_row].to_i
+          new_edge['target'] = i
+          new_edge['dist'] = rows[current_row][i+1].to_i
           edges.push(new_edge)
         end
       end
       id_row += 1
       current_row += 1
       next_line_size = rows[current_row].size
+    end
+
+    # Checking if all edges are bidirectional
+    bidirectional = true
+    edges.each do |e|
+      if edges.find_all{|d| d['source'] == e['target']}
+              .find_all{|d| d['target'] == e['source']}
+              .find_all{|d| d['dist'] == e['dist']}.size.zero?
+        bidirectional = false
+        break
+      end
+    end
+
+    # Remove duplicates if is fully bidirectional
+    if bidirectional
+      edges.each do |e|
+        obj = edges.find_all{|d| d['source'] == e['target']}.find_all{|d| d['target'] == e['source']}
+        obj.each do |o|
+          edges.delete(o)
+        end
+      end
+    end
+
+    # Finally fix edge ids
+    idx = 0
+    edges.each do |e|
+      e['id'] = idx
+      idx += 1
     end
 
     full_json = {}
@@ -137,7 +166,11 @@ class Converter
     size.times do |i|
       size.times do |j|
         string += '['
-        string += "#{matrix[[i, j]]}"
+        if matrix[[i,j]] > 10000
+          string += "∞"
+        else
+          string += "#{matrix[[i, j]]}"
+        end
         string += ']'
       end
       string += "\n"
@@ -145,25 +178,11 @@ class Converter
     return string
   end
 
-  # def self.create_node(id, label, x, y, size)
-  #   node = {}
-  #   node['id'] = id
-  #   node['label'] = label
-  #   node['x'] = x
-  #   node['y'] = y
-  #   node['size'] = size
-  #   node
-  # end
-
-  # def self.create_edge(source, target, dist)
-  #   edge = {}
-  #   edge['source'] = source
-  #   edge['target'] = target
-  #   edge['dist'] = dist
-  #   edge
-  # end
 end
 
 # Converter.csv_to_json('public/noroeste.csv', 'public/noroeste.json')
+# Converter.csv_to_json('public/testedoc.csv', 'public/testedoc.json')
+#binding.pry
 # Converter.json_to_csv('public/graph.json', 'lala.csv')
-# Converter.matrix_from_json('public/noroeste.json')
+# mc = Algorithm.matrix_from_json('public/testedoc.json')
+
