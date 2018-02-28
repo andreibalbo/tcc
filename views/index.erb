@@ -1,0 +1,29 @@
+<title>TCC</title>
+</head>
+<body>
+  <h3>Index</h3>
+  <p> Usar grafo padrão (Paraná):</p>
+  <form action="/graph1?graph=default">
+  <input type="submit" value="Grafo padrão">
+  </form>
+  <br>
+  <p> Carregar grafo de CSV: </p>
+  <form action='/upload' enctype="multipart/form-data" method='POST'>
+      <input name="file" type="file" />
+      <input type="submit" value="Carregar" />
+  </form>
+  <% if error == 1 %>
+    <p style="color: red;"> Arquivo precisa ser do tipo CSV! </p>
+  <% elsif error == 2 %>
+    <p style="color: red;"> Houve algum erro ao carregar o grafo, verifique se está no mesmo formato do padrão! </p>
+  <% end %>
+  <!-- <meta http-equiv="refresh" content="0; url=/platform" /> -->
+</body>
+
+<style type="text/css">
+form {
+  padding: 10px;
+  margin: 10px;
+  display: inline-block;
+}
+</style>

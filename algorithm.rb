@@ -67,14 +67,14 @@ class Algorithm
   end
 end
 
-mc = Algorithm.matrix_c_from_json('public/testedoc.json')
-puts "matrix c"
-puts Converter.matrix_to_string(mc)
-ret = Algorithm.floyd_algorithm(mc)
-mc2 = ret[0]
-mp2 = ret[1]
-puts "matrix c2"
-puts Converter.matrix_to_string(mc2)
-puts "matrix p2"
-puts Converter.matrix_to_string(mp2)
+# mc = Algorithm.matrix_c_from_json('public/testedoc.json')
+# puts "matrix c"
+# puts Converter.matrix_to_string(mc)
+# ret = Algorithm.floyd_algorithm(mc)
+# mc2 = ret[0]
+# mp2 = ret[1]
+# puts "matrix c2"
+# puts Converter.matrix_to_string(mc2)
+# puts "matrix p2"
+# puts Converter.matrix_to_string(mp2)
 # binding.pry

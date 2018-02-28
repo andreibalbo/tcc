@@ -75,7 +75,12 @@
  * configuration object. The plugin will just add the "graph" key to it
  * before the instanciation.
  */
-sigma.parsers.json('noroeste.json', {
+ <% if graph.nil? || graph == 'default'%>
+  var graphname = 'noroeste.json';
+ <% else %>
+  var graphname = <% "uploads/#{graph}" %>;
+ <% end %>
+sigma.parsers.json(graphname, {
   container: 'graph-container'
 });
 </script>
