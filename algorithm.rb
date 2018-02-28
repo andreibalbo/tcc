@@ -34,7 +34,7 @@ class Algorithm
     m = Hash.new
     size.times do |i|
       size.times do |j|
-        m[[i, j]] = i
+        m[[i, j]] = i+1
       end
     end
     return m
