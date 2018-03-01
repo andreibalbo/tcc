@@ -54,9 +54,10 @@
 <body>
   <div id="container">
     <div id="graph-container">
-
     </div>
   </div>
+
+
 
 </body>
 
@@ -75,14 +76,26 @@
  * configuration object. The plugin will just add the "graph" key to it
  * before the instanciation.
  */
- <% if graph.nil? || graph == 'default'%>
-  var graphname = 'noroeste.json';
- <% else %>
-  var graphname = <% "uploads/#{graph}" %>;
- <% end %>
-sigma.parsers.json(graphname, {
+var graphname = urlParam('graph');
+
+if (graphname == ""){
+  var fullname = "uploads/default.json"
+}else{
+  var fullname = "uploads/" + graphname;
+}
+
+sigma.parsers.json(fullname, {
   container: 'graph-container'
 });
+
+// Function to get url parameter
+function urlParam(name, w){
+    w = w || window;
+    var rx = new RegExp('[\&|\?]'+name+'=([^\&\#]+)'),
+        val = w.location.search.match(rx);
+    return !val ? '':val[1];
+}
+
 </script>
 
 <style type="text/css">

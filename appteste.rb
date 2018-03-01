@@ -2,6 +2,7 @@ require 'sinatra'
 require 'erb'
 require 'sinatra/reloader'
 require 'json'
+require 'pry-nav'
 
 #classes
 require_relative 'converter'
@@ -29,7 +30,7 @@ post '/upload' do
     tempfile = params[:file][:tempfile]
     filename = params[:file][:filename]
     if File.extname(filename) == '.csv'
-      cp(tempfile.path, "public/uploads/upload.csv")
+      FileUtils.cp(tempfile.path, "public/uploads/upload.csv")
       Converter.csv_to_json("public/uploads/upload.csv", "public/uploads/upload.json")
       if File.exist?("public/uploads/upload.json")
         redirect "/graph1?graph=upload.json"
