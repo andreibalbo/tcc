@@ -1,7 +1,6 @@
 require 'json'
 require 'pry-nav'
 require_relative 'converter'
-require_relative 'Converter'
 
 class Algorithm
 
