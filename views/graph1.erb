@@ -109,23 +109,24 @@
       s.bind('clickNode', function(e) {
         var nodeId = e.data.node.id;
         var nodeInfo = e.data.node.label;
-        console.log('node: ' + nodeInfo);
-
+        //console.log('node: ' + nodeInfo);
         neigh = s.graph.neighbors(nodeId);
-        var pneigh = Object.keys(neigh).map(function(k) { return neigh[k] });
 
-        console.log(pneigh)
+        var nneigh = Object.keys(neigh['node']).map(function(k) { return neigh['node'][k] });
+        var dneigh = Object.keys(neigh['dist']).map(function(k) { return neigh['dist'][k] });
+
         //toKeep[nodeId] = e.data.node;
         var string = "Info sobre o Nó: \n";
         string += "Nome: "
         string += nodeInfo;
         string += "\nVizinhos:\n"
-        pneigh.forEach(function(n) {
-          string += n.label;
+        var i = 0;
+        for (i; i < nneigh.length; i++){
+          string += nneigh[i].label;
           string += " - Distância: ";
-          string += n.dist;
+          string += dneigh[i];
           string += "\n";
-        });
+        }
         console.log(string);
 
       });
@@ -142,16 +143,20 @@
   }
 
   sigma.classes.graph.addMethod('neighbors', function(nodeId) {
-    var k,
-        neighbors = {},
-        index = this.allNeighborsIndex[nodeId] || {};
+    var k;
+    var neighbors = {};
+    neighbors['node'] = {};
+    neighbors['dist'] = {};
+    var index = this.allNeighborsIndex[nodeId] || {};
 
-    for (k in index)
-      neighbors[k] = this.nodesIndex[k];
-
+    for (k in index){
+      neighbors['node'][k] = this.nodesIndex[k];
+      for (z in index[k]){
+        neighbors['dist'][k] = index[k][z]['dist'];
+      }
+    }
     return neighbors;
   });
-
 
 </script>
 
