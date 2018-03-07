@@ -13,13 +13,19 @@ use_ssl = true
 # First page just redirects to 'init' route.
 get '/' do
   error = params[:error]
-  erb :index, :locals => {:error => params[:error]}
+  erb :index, :locals => {error: params[:error]}
 end
 
 get '/graph1' do
   graph = params[:graph]
-  erb :graph1, :locals => {:graph => params[:graph]}
-
+  if graph == "" || graph.nil?
+    filename = 'public/uploads/default.json'
+  else
+    filename == "public/uploads/#{graph}.json"
+  end
+  nodes = Converter.json_nodes(filename)
+  edges = Converter.json_edges(filename)
+  erb :graph1, :locals => {graph: params[:graph], nodes: nodes, edges: edges}
 end
 
 get '/upload' do

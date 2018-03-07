@@ -178,8 +178,20 @@ class Converter
     return string
   end
 
-end
+  def self.json_nodes(input)
+    file = File.read(input)
+    data_hash = JSON.parse(file)
+    #data_hash
+    data_hash['nodes']
+  end
 
+  def self.json_edges(input)
+    file = File.read(input)
+    data_hash = JSON.parse(file)
+    #data_hash
+    data_hash['edges']
+  end
+end
 # Converter.csv_to_json('public/noroeste.csv', 'public/noroeste.json')
 # Converter.csv_to_json('public/testedoc.csv', 'public/testedoc.json')
 #binding.pry

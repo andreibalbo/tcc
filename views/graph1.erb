@@ -57,10 +57,16 @@
     <div id="graph-container">
     </div>
     <div id="info-container">
+      <div id="nodes-list">
+        <select>
+          <% nodes.each do |n|%>
+          <option value= <%= n['id'].to_s %> > <%= n['label'] %></option>
+          <% end %>
+        </select>
+      </div>
+      <div id="nodes-info"></div>
     </div>
   </div>
-
-
 
 </body>
 
@@ -184,7 +190,26 @@
     margin-left: 10px;
     top: 10px;
     width: 270px;
-    height: 270px;
+    height: 500px;
+    position: relative;
+    display: inline-block;
+  }
+
+  #nodes-list {
+    margin-left: 8px;
+    top: -7px;
+    width: 260px;
+    height: 245px;
+    position: relative;
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 3px;
+  }
+
+  #nodes-info {
+    margin-left: 8px;
+    width: 260px;
+    height: 245px;
     position: relative;
     display: inline-block;
     border: 1px solid black;
