@@ -1,3 +1,5 @@
+<script src="jquery-3.3.1.min.js"></script>
+
 <!-- START SIGMA IMPORTS -->
 <script src="sigmajs/src/sigma.core.js"></script>
 <script src="sigmajs/src/conrad.js"></script>
@@ -47,6 +49,7 @@
 <script src="sigmajs/src/misc/sigma.misc.drawHovers.js"></script>
 <script src="sigmajs/plugins/sigma.parsers.json/sigma.parsers.json.js"></script>
 <!-- END SIGMA IMPORTS -->
+
 <head>
   <title>App</title>
 </head>
@@ -64,7 +67,9 @@
           <% end %>
         </select>
       </div>
-      <div id="nodes-info"></div>
+      <div id="nodes-info">
+        <textarea id="nodes-info-text"> Nodes Info </textarea>
+      </div>
     </div>
   </div>
 
@@ -133,12 +138,15 @@
           string += dneigh[i];
           string += "\n";
         }
-        console.log(string);
-
+        update_node_info(string);
       });
 
     }
   );
+
+  function update_node_info(text){
+    $("#nodes-info-text").val(text);
+  }
 
   // Function to get url parameter
   function urlParam(name, w){
@@ -214,5 +222,16 @@
     display: inline-block;
     border: 1px solid black;
     border-radius: 3px;
+    overflow: hidden;
   }
+  #nodes-info-text{
+    height: 230px;
+    width: 245px;
+    position: relative;
+    display: inline-block;
+    margin-top: 8px;
+    margin-left: 8px;
+
+  }
+
 </style>
