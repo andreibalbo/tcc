@@ -43,6 +43,14 @@ post '/upload' do
       else
         redirect "/?error=2"
       end
+    elsif File.extname(filename) == '.json'
+      FileUtils.cp(tempfile.path, "public/uploads/upload.json")
+      if File.exist?("public/uploads/upload.json")
+        redirect "/graph1?graph=upload.json"
+      else
+        redirect "/?error=2"
+      end
+      redirect "/?error=1"
     else
       redirect "/?error=1"
     end
