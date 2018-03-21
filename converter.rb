@@ -1,7 +1,8 @@
 require 'csv'
 require 'json'
 require 'pry-nav'
-require_relative 'algorithm'
+# require_relative 'algorithm'
+
 class Converter
   @@nodes = []
   @@edges = []
