@@ -9,6 +9,8 @@ class Algorithm
   @matrix_p2 = Hash.new
   @matrix_c2 = Hash.new
   @centers = []
+  @edges = []
+  @nodes = []
 
   def self.matrix_c
     @matrix_c
@@ -23,13 +25,21 @@ class Algorithm
     @matrix_p2
   end
 
+  def self.nodes
+    @nodes
+  end
+
+  def self.edges
+    @edges
+  end
+
   def self.matrix_c_from_json(input)
     m = Hash.new
     inf = Float::INFINITY
     file = File.read(input)
     data_hash = JSON.parse(file)
-    edges = data_hash['edges']
-    nodes = data_hash['nodes']
+    @edges = data_hash['edges']
+    @nodes = data_hash['nodes']
     if data_hash['bidirectional'].zero?
       bidirectional = false
     else
@@ -112,6 +122,62 @@ class Algorithm
     # Return reversed array to show correct path order
     return path.reverse
   end
+
+  def self.teitz_bart(ncenters)
+    size = Math.sqrt(@matrix_c.size).to_i
+    if ncenters > size/2 || ncenters < 1
+      return -1
+    end
+    while @centers.size < ncenters
+      random = rand(ncenters)
+      @centers.push(random) if @centers.index(random).nil?
+    end
+    non_analysed = []
+    size.times do |i|
+      non_analysed.push(i)
+    end
+    non_analysed = non_analysed - @centers
+    analysed = []
+    binding.pry
+    while non_analysed.size > 0
+      # Teitz&Bart Algorithm
+
+    end
+
+    binding.pry
+
+  end
+
+  def self.calculate_total_centers_distance(centers)
+
+    total_distance = 0
+    center_proximity = []
+    # Get an array that shows nearest center for each node
+    @nodes.each do |n|
+      if
+      min_center_dist = Float::INFINITY
+      @centers.each do |c|
+        if shortest_distance(n['id'].to_i, c) < min_center_dist
+          min_center_dist = shortest_distance(n['id'].to_i, c)
+          center_proximity[n['id'].to_i] = c
+        end
+      end
+    end
+    binding.pry
+    # Calculate total centers distance
+    center_proximity.each do |i|
+      total_distance += shortest_distance(center_proximity.index(i), i) unless i.nil?
+    end
+    total_distance
+
+    end
+
+    @centers.each  do |c|
+
+    end
+
+  end
+
 end
 
 Algorithm.matrix_c_from_json('public/noroeste.json')
