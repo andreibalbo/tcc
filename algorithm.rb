@@ -8,6 +8,7 @@ class Algorithm
   @matrix_p = Hash.new
   @matrix_p2 = Hash.new
   @matrix_c2 = Hash.new
+  @centers = []
 
   def self.matrix_c
     @matrix_c
@@ -29,6 +30,11 @@ class Algorithm
     data_hash = JSON.parse(file)
     edges = data_hash['edges']
     nodes = data_hash['nodes']
+    if data_hash['bidirectional'].zero?
+      bidirectional = false
+    else
+      bidirectional = true
+    end
 
     # Fill matrix with standard values
     nodes.size.times do |i|
@@ -43,6 +49,7 @@ class Algorithm
     # Filling with edge values
     edges.each do |e|
       m[[e['source'], e['target']]] = e['dist']
+      m[[e['target'], e['source']]] = e['dist'] if bidirectional
     end
     @matrix_c = m
   end
@@ -107,7 +114,7 @@ class Algorithm
   end
 end
 
-Algorithm.matrix_c_from_json('public/testedoc.json')
+Algorithm.matrix_c_from_json('public/noroeste.json')
 puts "matrix c"
 puts Converter.matrix_to_string(Algorithm.matrix_c)
 Algorithm.floyd_algorithm
