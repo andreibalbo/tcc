@@ -25,6 +25,10 @@ class Algorithm
     @matrix_p2
   end
 
+  def self.centers
+    @centers
+  end
+
   def self.nodes
     @nodes
   end
@@ -138,23 +142,23 @@ class Algorithm
     end
     non_analysed = non_analysed - @centers
     analysed = []
-    binding.pry
+    min_tdistance = Float::INFINITY
     while non_analysed.size > 0
       # Teitz&Bart Algorithm
+      d = calculate_total_centers_distance
+      min_tdistance = d if d < min_tdistance
+
+
 
     end
 
-    binding.pry
-
   end
 
-  def self.calculate_total_centers_distance(centers)
-
+  def self.calculate_total_centers_distance
     total_distance = 0
     center_proximity = []
     # Get an array that shows nearest center for each node
     @nodes.each do |n|
-      if
       min_center_dist = Float::INFINITY
       @centers.each do |c|
         if shortest_distance(n['id'].to_i, c) < min_center_dist
@@ -169,12 +173,9 @@ class Algorithm
       total_distance += shortest_distance(center_proximity.index(i), i) unless i.nil?
     end
     total_distance
+  end
 
-    end
-
-    @centers.each  do |c|
-
-    end
+  def self.swap_center
 
   end
 
