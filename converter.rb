@@ -67,6 +67,7 @@ class Converter
         break
       end
     end
+    puts "bidirectional #{bidirectional}"
 
     # Remove duplicates if is fully bidirectional
     if bidirectional
@@ -86,6 +87,8 @@ class Converter
     end
 
     full_json = {}
+    full_json['bidirectional'] = 1 if bidirectional
+    full_json['bidirectional'] = 0 if !bidirectional
     full_json['nodes'] = nodes
     full_json['edges'] = edges
 
