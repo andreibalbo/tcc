@@ -142,14 +142,35 @@ class Algorithm
     end
     non_analysed = non_analysed - @centers
     analysed = []
-    min_tdistance = Float::INFINITY
+    d = calculate_total_centers_distance
+    min_tdistance = d
+    binding.pry
     while non_analysed.size > 0
       # Teitz&Bart Algorithm
-      d = calculate_total_centers_distance
-      min_tdistance = d if d < min_tdistance
 
+      # random current node
+      random = non_analysed.sample
+      current_node = random
+      centers_backup = @centers
+      tdistances = []
+      # swap with every center and calculate total distance
+      ncenters.size.times do |i|
+        @centers[i] = current_node
+        tdistances[i] = calculate_total_centers_distance
+        @centers = centers_backup
+      end
 
-
+      # get min distance from array and check if its better
+      node_min_d = tdistances.min
+      if node_min_d < min_tdistance
+        min_tdistance = node_min_d
+        idx = tdistances.indes(node_min_d)
+        analysed.push(@centers[idx])
+        @centers[idx] = current_node
+      else
+        analysed.push(current_node)
+      end
+        non_analysed - [current_node]
     end
 
   end
@@ -167,16 +188,11 @@ class Algorithm
         end
       end
     end
-    binding.pry
     # Calculate total centers distance
     center_proximity.each do |i|
       total_distance += shortest_distance(center_proximity.index(i), i) unless i.nil?
     end
     total_distance
-  end
-
-  def self.swap_center
-
   end
 
 end
@@ -189,4 +205,5 @@ puts "matrix c2"
 puts Converter.matrix_to_string(Algorithm.matrix_c2)
 puts "matrix p2"
 puts Converter.matrix_to_string(Algorithm.matrix_p2)
+Algorithm.teitz_bart
 binding.pry
