@@ -144,7 +144,7 @@ class Algorithm
     analysed = []
     d = calculate_total_centers_distance
     min_tdistance = d
-    binding.pry
+    # removing pru ; qual fita
     while non_analysed.size > 0
       # Teitz&Bart Algorithm
 
