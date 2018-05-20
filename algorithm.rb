@@ -195,6 +195,57 @@ class Algorithm
     total_distance
   end
 
+  def self.two_opt_best_route(array)
+    begin
+      if array.size.zero?
+        return -1
+      else
+        min_distance = calculate_route_length(array)
+        route_result = array.clone
+        test_array = array.clone
+        no_swap = false
+        while no_swap == false
+          puts "comecando loop com array #{route_result.to_s}"
+          no_swap = true
+          test_array = route_result.clone
+          route_result.each_with_index do |n, i|
+            break if no_swap == false
+            route_result.each_with_index do |m, j|
+              break if no_swap == false
+              next if j == i || m == route_result.first || n == route_result.first
+              test_array[i] = m
+              test_array[j] = n
+              length = calculate_route_length(test_array)
+              if length < min_distance
+                puts "trocando #{route_result.to_s} l:#{min_distance} por #{test_array.to_s} l:#{length}"
+                no_swap = false
+                min_distance = length
+                route_result = test_array.clone
+              else
+                test_array = route_result.clone
+              end
+            end
+          end
+        end
+        puts "final length: #{calculate_route_length(route_result)}"
+        return route_result
+      end
+    rescue StandardError => e
+      puts e.backtrace
+      return -1
+    end
+  end
+
+  def self.calculate_route_length(array)
+    length = 0
+    array.each_with_index do |n, i|
+      unless array[i+1].nil?
+        length = length + @matrix_c2[[n, array[i+1]]]
+      end
+    end
+    return length
+  end
+
 end
 
 Algorithm.matrix_c_from_json('public/noroeste.json')
@@ -205,5 +256,7 @@ puts "matrix c2"
 puts Converter.matrix_to_string(Algorithm.matrix_c2)
 puts "matrix p2"
 puts Converter.matrix_to_string(Algorithm.matrix_p2)
-Algorithm.teitz_bart
+path = [3, 4, 0, 2, 1]
+puts Algorithm.two_opt_best_route(path)
+# Algorithm.teitz_bart
 binding.pry
