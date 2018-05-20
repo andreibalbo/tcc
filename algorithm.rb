@@ -132,8 +132,9 @@ class Algorithm
     if ncenters > size/2 || ncenters < 1
       return -1
     end
+    @centers = []
     while @centers.size < ncenters
-      random = rand(ncenters)
+      random = rand(size)
       @centers.push(random) if @centers.index(random).nil?
     end
     non_analysed = []
@@ -144,35 +145,34 @@ class Algorithm
     analysed = []
     d = calculate_total_centers_distance
     min_tdistance = d
-    # removing pru ; qual fita
+
     while non_analysed.size > 0
       # Teitz&Bart Algorithm
 
       # random current node
-      random = non_analysed.sample
-      current_node = random
-      centers_backup = @centers
+      current_node = non_analysed.sample
+      centers_backup = @centers[0..@centers.length]
       tdistances = []
       # swap with every center and calculate total distance
-      ncenters.size.times do |i|
+      ncenters.times do |i|
         @centers[i] = current_node
         tdistances[i] = calculate_total_centers_distance
-        @centers = centers_backup
+        @centers = centers_backup[0..centers_backup.length]
       end
 
       # get min distance from array and check if its better
       node_min_d = tdistances.min
       if node_min_d < min_tdistance
         min_tdistance = node_min_d
-        idx = tdistances.indes(node_min_d)
+        idx = tdistances.index(node_min_d)
         analysed.push(@centers[idx])
         @centers[idx] = current_node
       else
         analysed.push(current_node)
       end
-        non_analysed - [current_node]
+        non_analysed = non_analysed - [current_node]
     end
-
+    return @centers
   end
 
   def self.calculate_total_centers_distance
@@ -189,8 +189,8 @@ class Algorithm
       end
     end
     # Calculate total centers distance
-    center_proximity.each do |i|
-      total_distance += shortest_distance(center_proximity.index(i), i) unless i.nil?
+    center_proximity.each_with_index do |c, i|
+      total_distance += shortest_distance(i, c) unless c.nil?
     end
     total_distance
   end
@@ -201,13 +201,12 @@ class Algorithm
         return -1
       else
         min_distance = calculate_route_length(array)
-        route_result = array.clone
-        test_array = array.clone
+        route_result = array[0..array.length]
+        test_array = array[0..array.length]
         no_swap = false
         while no_swap == false
           puts "comecando loop com array #{route_result.to_s}"
           no_swap = true
-          test_array = route_result.clone
           route_result.each_with_index do |n, i|
             break if no_swap == false
             route_result.each_with_index do |m, j|
@@ -220,9 +219,9 @@ class Algorithm
                 puts "trocando #{route_result.to_s} l:#{min_distance} por #{test_array.to_s} l:#{length}"
                 no_swap = false
                 min_distance = length
-                route_result = test_array.clone
+                route_result = test_array[0..test_array.length]
               else
-                test_array = route_result.clone
+                test_array = route_result[0..route_result.length]
               end
             end
           end
@@ -257,6 +256,6 @@ puts Converter.matrix_to_string(Algorithm.matrix_c2)
 puts "matrix p2"
 puts Converter.matrix_to_string(Algorithm.matrix_p2)
 path = [3, 4, 0, 2, 1]
-puts Algorithm.two_opt_best_route(path)
-# Algorithm.teitz_bart
+#puts Algorithm.two_opt_best_route(path)
+puts "teitzbart centers: #{Algorithm.teitz_bart(2).to_s}"
 binding.pry
