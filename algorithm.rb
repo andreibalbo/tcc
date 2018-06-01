@@ -195,6 +195,30 @@ class Algorithm
     total_distance
   end
 
+  def self.center_hash_proximity
+    center_proximity = {}
+    # Get an array that shows nearest center for each node
+    center_nodes = []
+    @centers.each do |c|
+      center_nodes[c] = []
+    end
+    @nodes.each do |n|
+      min_center_dist = Float::INFINITY
+      chosen_center = nil
+      @centers.each do |c|
+        if shortest_distance(n['id'].to_i, c) < min_center_dist
+          min_center_dist = shortest_distance(n['id'].to_i, c)
+          chosen_center = c
+        end
+      end
+      center_nodes[chosen_center].push(n['id'].to_i)
+    end
+    @centers.each do |c|
+      center_proximity[c.to_s] = center_nodes[c]
+    end
+    center_proximity
+  end
+
   def self.two_opt_best_route(array)
     begin
       if array.size.zero?
@@ -247,15 +271,17 @@ class Algorithm
 
 end
 
-Algorithm.matrix_c_from_json('public/noroeste.json')
-puts "matrix c"
-puts Converter.matrix_to_string(Algorithm.matrix_c)
-Algorithm.floyd_algorithm
-puts "matrix c2"
-puts Converter.matrix_to_string(Algorithm.matrix_c2)
-puts "matrix p2"
-puts Converter.matrix_to_string(Algorithm.matrix_p2)
-path = [3, 4, 0, 2, 1]
-#puts Algorithm.two_opt_best_route(path)
-puts "teitzbart centers: #{Algorithm.teitz_bart(2).to_s}"
-binding.pry
+#  Algorithm.matrix_c_from_json('public/uploads/upload.json')
+# # #puts "matrix c"
+# # #puts Converter.matrix_to_string(Algorithm.matrix_c)
+#  Algorithm.floyd_algorithm
+#  binding.pry
+# #puts "matrix c2"
+# #puts Converter.matrix_to_string(Algorithm.matrix_c2)
+# #puts "matrix p2"
+# #puts Converter.matrix_to_string(Algorithm.matrix_p2)
+# path = [3, 4, 0, 2, 1]
+# binding.pry
+# #puts Algorithm.two_opt_best_route(path)
+# puts "teitzbart centers: #{Algorithm.teitz_bart(2).to_s}"
+# binding.pry
