@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    container_name: tcc-app
+    build: .
+    command: bash -c "while [ true ]; do sleep 10; done"
+    volumes:
+      - .:/tcc
+    ports:
+      - "4567:4567"

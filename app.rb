@@ -21,7 +21,7 @@ get '/graph1' do
   if graph == "" || graph.nil?
     filename = 'public/uploads/default.json'
   else
-    filename == "public/uploads/#{graph}.json"
+    filename = "public/uploads/#{graph}"
   end
   nodes = Converter.json_nodes(filename)
   edges = Converter.json_edges(filename)

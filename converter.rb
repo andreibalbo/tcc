@@ -30,11 +30,10 @@ class Converter
     end
 
     # Create edges
-
     # Find edges header
     while rows[current_row][0] != "Graph"
       current_row += 1
-      break if current_row > 1000
+      break if current_row > 10000
     end
     current_row += 1 # Skip header
     id_row = 0 # node id of current row
@@ -54,7 +53,11 @@ class Converter
       end
       id_row += 1
       current_row += 1
-      next_line_size = rows[current_row].size
+      if rows[current_row].nil?
+        next_line_size = 0
+      else
+        next_line_size = rows[current_row].size
+      end
     end
 
     # Checking if all edges are bidirectional
@@ -67,6 +70,7 @@ class Converter
         break
       end
     end
+    puts "bidirectional #{bidirectional}"
 
     # Remove duplicates if is fully bidirectional
     if bidirectional
@@ -86,6 +90,8 @@ class Converter
     end
 
     full_json = {}
+    full_json['bidirectional'] = 1 if bidirectional
+    full_json['bidirectional'] = 0 if !bidirectional
     full_json['nodes'] = nodes
     full_json['edges'] = edges
 
