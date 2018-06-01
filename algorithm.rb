@@ -270,16 +270,41 @@ class Algorithm
   end
 
   def self.nearest_neighbour_path(array)
+    begin
+      if array.size.zero?
+        return -1
+      else
+        path = [array.first]
+        unused_nodes = array - [array.first]
+        while unused_nodes.size > 0
+          min_distance = Float::INFINITY
+          selected_node = nil
+          unused_nodes.each do |n|
+            if shortest_distance(path.last, n) < min_distance
+              selected_node = n
+              min_distance = shortest_distance(path.last, n)
+            end
+          end
+          path.push(selected_node)
+          unused_nodes = unused_nodes - [selected_node]
+        end
+        return path
+      end
+    rescue StandardError => e
+      puts e.backtrace
+      return -1
+    end
   end
 
 end
 
-#  Algorithm.matrix_c_from_json('public/uploads/upload.json')
-# # #puts "matrix c"
-# # #puts Converter.matrix_to_string(Algorithm.matrix_c)
-#  Algorithm.floyd_algorithm
-#  binding.pry
-# #puts "matrix c2"
+# Algorithm.matrix_c_from_json('public/noroeste.json')
+# # # #puts "matrix c"
+# # # #puts Converter.matrix_to_string(Algorithm.matrix_c)
+# Algorithm.floyd_algorithm
+# #  binding.pry
+# # #puts "matrix c2"
+# binding.pry
 # #puts Converter.matrix_to_string(Algorithm.matrix_c2)
 # #puts "matrix p2"
 # #puts Converter.matrix_to_string(Algorithm.matrix_p2)
