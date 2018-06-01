@@ -269,6 +269,9 @@ class Algorithm
     return length
   end
 
+  def self.nearest_neighbour_path(array)
+  end
+
 end
 
 #  Algorithm.matrix_c_from_json('public/uploads/upload.json')
