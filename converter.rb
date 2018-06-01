@@ -9,7 +9,7 @@ class Converter
 
   def self.csv_to_json(input, output)
     rows = []
-    CSV.foreach(input) do |row|
+    CSV.foreach(input, :encoding => 'UTF-8') do |row|
       rows.push(row.join.split(';'))
     end
     # Create nodes
