@@ -6,7 +6,10 @@ require 'pry-nav'
 
 #classes
 require_relative 'converter'
+require_relative 'algorithm'
 
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 set :bind, '0.0.0.0'
 use_ssl = true
 
@@ -28,8 +31,36 @@ get '/graph1' do
   erb :graph1, :locals => {graph: params[:graph], nodes: nodes, edges: edges}
 end
 
-get '/upload' do
-    erb :upload
+get '/create_subgraph' do
+  selected_nodes = params[:selected]
+  if selected_nodes.nil?
+    file = File.read('public/uploads/upload.json')
+    File.write('public/uploads/subgraph.json', file)
+  else
+  end
+  redirect '/graph2'
+end
+
+get '/graph2' do
+  ncenters = params[:nc]
+
+  if File.exist? "public/uploads/subgraph.json"
+    filename = "public/uploads/subgraph.json"
+  else
+    return {status: 500}
+  end
+
+  centers = []
+  proximity_hash = {}
+  unless ncenters.nil?
+    Algorithm.matrix_c_from_json(filename)
+    Algorithm.floyd_algorithm
+    centers = Algorithm.teitz_bart(ncenters.to_i)
+    proximity_hash = Algorithm.center_hash_proximity
+  end
+  nodes = Converter.json_nodes(filename)
+  edges = Converter.json_edges(filename)
+  erb :graph2, :locals => {nodes: nodes, edges: edges, centers: centers, prox_hash: proximity_hash.to_json}
 end
 
 post '/upload' do
