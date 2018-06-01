@@ -51,6 +51,7 @@
 <!-- END SIGMA IMPORTS -->
 
 <head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>App</title>
 </head>
 
@@ -82,6 +83,9 @@
 
 
     </div>
+    <div id="menu-subgraph">
+      <button class="button-advance" onclick="buttonAdvance()"> Criar subgrafo</button>
+    </div>
 
   </div>
 
@@ -108,6 +112,10 @@
     var fullname = "uploads/default.json"
   }else{
     var fullname = "uploads/" + graphname;
+  }
+
+  buttonAdvance = function(){
+    window.location = '/create_subgraph'
   }
 
   sigma.parsers.json(fullname, {
@@ -273,7 +281,7 @@
     background-color: white;
     margin-right: 12px;
     margin-left: 15px;
-    width: 100%;
+    width: 700px;
     height: 150px;
     position: relative;
 
@@ -284,6 +292,16 @@
     overflow: hidden;
     margin-top: 10px;
     float:left;
+  }
+  #menu-subgraph {
+    width: 200px;
+    height: 150px;
+    position: relative;
+    margin-top: 10px;
+  }
+  #menu-subgraph button {
+    margin: 15px;
+    position: relative;
   }
   #selected-item {
     height: 15px;
