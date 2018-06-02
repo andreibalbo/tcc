@@ -63,11 +63,13 @@
       </div>
       <div id="info-container">
         <div id="nodes-list">
-          <select>
+          <select id="select-nodes-add">
+            <option value="" disabled="disabled"></option>
             <% nodes.each do |n|%>
             <option value= <%= n['id'].to_s %> > <%= n['label'] %></option>
             <% end %>
           </select>
+          <button id="add-node-button">Adicionar aos selecionados</button>
         </div>
         <div id="nodes-info">
           <textarea id="nodes-info-text"> Nodes Info </textarea>
@@ -75,16 +77,10 @@
       </div>
 
     <div id="selected-nodes">
-      <a id="selected-item">Sanza<div class="hover-delete">Excluir</div></a>
-      <a id="selected-item">Sanasccasza<div class="hover-delete">Excluir</div></a>
-      <a id="selected-item">Sa12ncddza<div class="hover-delete">Excluir</div></a>
-      <a id="selected-item">Sawdwdnza<div class="hover-delete">Excluir</div></a>
-      <a id="selected-item">Sanwdwza<div class="hover-delete">Excluir</div></a>
-
-
     </div>
     <div id="menu-subgraph">
-      <button class="button-advance" onclick="buttonAdvance()"> Criar subgrafo</button>
+      <button class="button-advance" onclick="buttonAdvance()"> Criar subgrafo com todos os nós</button><br>
+      <button class="button-advance-selected" onclick="buttonAdvanceSelected()"> Criar subgrafo com nós selecionados</button>
     </div>
 
   </div>
@@ -116,6 +112,59 @@
 
   buttonAdvance = function(){
     window.location = '/create_subgraph'
+  }
+
+  $( "#add-node-button" ).click(function(e) {
+    e.preventDefault();
+    var selected_id = $('#select-nodes-add').val();
+    var selected_text = $('#select-nodes-add option:selected').text();
+    $("#select-nodes-add option[value=" + selected_id + "]").attr('disabled', 'disabled');
+    $( "#selected-nodes" ).append("<a class='selected-item' name='"+selected_id+"'>"+selected_text+"<div class='hover-delete' onclick='deleteSelected(this)'>Remover</div></a>" );
+    $('#select-nodes-add').prop('selectedIndex',0);
+    var s = sigma.instances()[0];
+    s.graph.nodes()[selected_id].color = '#0f0';
+    s.graph.edges().forEach(function(e){
+      e.color = '#000';
+    });
+    s.refresh();
+  });
+
+  deleteSelected = function(element) {
+    var removed_id = parseInt(element.parentElement.name);
+    $("#select-nodes-add option[value=" + removed_id + "]").removeAttr('disabled');
+    var s = sigma.instances()[0];
+    s.graph.nodes()[removed_id].color = '#000';
+    s.refresh();
+    $(element).parent().remove();
+  }
+
+  dc_toggle_selected = function(id){
+    var toggle_id = id;
+    var s = sigma.instances()[0];
+    //check if is selected
+    if ($(".selected-item[name="+id+"]").length > 0){
+      $("#select-nodes-add option[value=" + toggle_id + "]").removeAttr('disabled');
+      s.graph.nodes()[toggle_id].color = '#000';
+      s.refresh();
+      $(".selected-item[name"+id+"]").remove();
+    }
+    else {
+      $("#select-nodes-add option[value=" + toggle_id + "]").attr('disabled', 'disabled');
+      var toggle_label = s.graph.nodes()[toggle_id].label;
+      $( "#selected-nodes" ).append("<a class='selected-item' name='"+toggle_id+"'>"+toggle_label+"<div class='hover-delete' onclick='deleteSelected(this)'>Remover</div></a>" );
+      $('#select-nodes-add').prop('selectedIndex',0);
+      s.graph.nodes()[toggle_id].color = '#0f0'
+      s.graph.edges().forEach(function(e){
+        e.color = '#000';
+      });
+    s.refresh();
+    }
+  };
+
+  buttonAdvanceSelected = function(){
+    var ids = $(".selected-item").map(function() {
+      return this.name;
+    }).get();
   }
 
   sigma.parsers.json(fullname, {
@@ -161,8 +210,12 @@
         update_node_info(string);
       });
 
+      s.bind('doubleClickNode', function(e) {
+        var nodeId = e.data.node.id;
+        dc_toggle_selected(nodeId);
+      });
+
       s.bind('overEdge', function(e) {
-        debugger;
         var edgeId = e.data.edge.id;
         var nodeDist = e.data.edge.dist;
         //console.log('node: ' + nodeInfo);
@@ -303,7 +356,7 @@
     margin: 15px;
     position: relative;
   }
-  #selected-item {
+  .selected-item {
     height: 15px;
     min-width: 80px;
     overflow: hidden;
@@ -317,7 +370,7 @@
     margin-left: 5px;
     cursor: pointer;
   }
-  #selected-item:hover .hover-delete{
+  .selected-item:hover .hover-delete{
   display : block;
   }
   .hover-delete{
