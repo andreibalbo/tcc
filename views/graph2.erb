@@ -66,7 +66,7 @@
           <div>
             <input type="number" id="tb-centers"><br>
             <button onclick="calculateTB()">Teitz & Bart</button><br>
-            <p>centers: <%= centers.to_s %></p>
+            <input type="checkbox" id="show-each-centers-path" value="Bike">Mostrar melhor rota para cada centro<br>
           </div>
         </div>
         <div id="nodes-info">
@@ -101,15 +101,15 @@
 
   calculateTB = function() {
   var ncenters = $('#tb-centers').val();
-    if (ncenters == "" || ncenters < 2) {
-      alert('Número inválido de centros!!!');
+    if (ncenters == "" || ncenters < 1) {
+      window.location = '/graph2';
     }
     else {
       window.location = '/graph2?nc=' + ncenters;
     }
   }
   var centers = [];
-  <% if centers.size > 1 %>
+  <% if centers.size > 0 %>
     centers = <%= centers.inspect %>
   <% end %>
   var proximity_hash;
@@ -118,11 +118,29 @@
     json_prox = <%= prox_hash.inspect %>
     proximity_hash = JSON.parse( json_prox );
   <% end %>
+  var centers_path_hash;
+  var json_cpath;
+  <% if cpath_hash.size > 0 %>
+    json_cpath = <%= cpath_hash.inspect %>
+    centers_path_hash = JSON.parse( json_cpath );
+  <% end %>
+
+  var instance_nodes = [];
+  var instance_edges = [];
 
   sigma.parsers.json(fullname, {
-    container: 'graph-container'
+    container: 'graph-container',
+    type: 'canvas'
   },
     function(s) {
+
+      s.graph.nodes().forEach(function(n) {
+        instance_nodes[n.id] = n;
+      });
+      s.graph.edges().forEach(function(e) {
+        instance_edges[e.id] = e;
+      });
+
       // First, set all nodes and edges to black
       s.graph.nodes().forEach(function(n) {
         var needRefresh = false;
@@ -164,6 +182,16 @@
       // that center and highlight them
 
       s.bind('clickNode', function(e) {
+        //reset all nodes and edges color
+        s.graph.nodes().forEach(function(n) {
+          if (!centers.includes(n.id)){
+            n.color = '#000';
+          }
+        });
+        s.graph.edges().forEach(function(e) {
+          e.color = '#000';
+        });
+
         var nodeId = e.data.node.id;
         var nodeInfo = e.data.node.label;
         neigh = s.graph.neighbors(nodeId);
@@ -194,17 +222,33 @@
               if (!centers.includes(n.id)) {n.color = '#000';}
             }
           });
+          if (document.getElementById("show-each-centers-path").checked){
+            var path_array = centers_path_hash[node.id]
+            var path_info_string = "Cidade centro - "+ node.label +"\n";
+            path_info_string += "Melhor rota:\n"
+            path_array.forEach(function(p, i){
+              if (p != path_array[path_array.length-1]){
+                path_info_string += instance_nodes[p].label +" > ";
+                var pindex = i;
+                var pnext = path_array[i+1];
+                instance_edges.forEach(function(e){
+                  if ((e.source == p && e.target == pnext) || ((e.target == p && e.source == pnext))){
+                    e.color = '#3333ff';
+                  }
+                });
+              } else { path_info_string += instance_nodes[p].label }
+            });
+            update_node_info(path_info_string);
+
+          }
+
           s.refresh();
         }
 
       });
 
       s.bind('overEdge', function(e) {
-        var edgeId = e.data.edge.id;
-        var nodeDist = e.data.edge.dist;
-        //console.log('node: ' + nodeInfo);
-        neigh = s.graph.neighbors(nodeId);
-
+        console.log('edge: ' + e);
       });
 
     }
