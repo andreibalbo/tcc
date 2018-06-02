@@ -55,12 +55,21 @@ get '/graph2' do
   unless ncenters.nil?
     Algorithm.matrix_c_from_json(filename)
     Algorithm.floyd_algorithm
+    puts 'floyd done'
     centers = Algorithm.teitz_bart(ncenters.to_i)
+    puts 'teitzbart done'
     proximity_hash = Algorithm.center_hash_proximity
+    puts 'centerhash done'
+    centers_path_hash = Algorithm.center_hash_paths(proximity_hash)
+    puts 'centerspath hash done'
   end
   nodes = Converter.json_nodes(filename)
   edges = Converter.json_edges(filename)
-  erb :graph2, :locals => {nodes: nodes, edges: edges, centers: centers, prox_hash: proximity_hash.to_json}
+  erb :graph2, :locals => {nodes: nodes,
+                           edges: edges,
+                           centers: centers,
+                           prox_hash: proximity_hash.to_json,
+                           cpath_hash: centers_path_hash.to_json}
 end
 
 post '/upload' do
