@@ -110,7 +110,7 @@ class Algorithm
   def self.shortest_path(nodea, nodeb)
     path = []
     # First verification
-    if @matrix_p2[[nodea, nodeb]] == nodea && matrix_c[[nodea, nodeb]] > 1000
+    if @matrix_p2[[nodea, nodeb]] == nodea && @matrix_c[[nodea, nodeb]] > 1000
       # There is no path
       return -1
     end
@@ -219,6 +219,46 @@ class Algorithm
     center_proximity
   end
 
+  def self.center_hash_paths(hash_input)
+    center_proximity = hash_input
+    keys = center_proximity.keys
+    centers = keys.map(&:to_i)
+    hash_centers_path = {}
+    centers.each do |c|
+      hash_centers_path[c.to_s] = []
+      arr_path = center_proximity[c.to_s]
+      arr_path = [c] + arr_path
+      arr_path = nearest_neighbour_path(arr_path)
+      arr_path = two_opt_best_route(arr_path)
+      hash_centers_path[c.to_s] = arr_path
+    end
+    begin
+      full_path_hash = {}
+      centers.each do |c|
+        full_path_hash[c.to_s] = hash_centers_path[c.to_s][0..hash_centers_path[c.to_s].length]
+      end
+      centers.each do |c|
+        inserted_counter = 0
+        hash_centers_path[c.to_s].each_with_index do |a,i|
+          next if a == hash_centers_path[c.to_s].last
+          puts "calculando rota do centro #{c} | node: #{a}"
+          path = shortest_path(a, hash_centers_path[c.to_s][i+1])
+          if path.size > 2
+            elmnts_to_insert = path.drop(1)
+            elmnts_to_insert = elmnts_to_insert.reverse.drop(1).reverse
+            elmnts_to_insert.reverse.each do |e|
+              full_path_hash[c.to_s].insert(i + 1 + inserted_counter, e)
+            end
+            inserted_counter += elmnts_to_insert.size
+          end
+        end
+      end
+      return full_path_hash
+    rescue => e
+      puts e.backtrace
+    end
+  end
+
   def self.two_opt_best_route(array)
     begin
       if array.size.zero?
@@ -298,10 +338,14 @@ class Algorithm
 
 end
 
-# Algorithm.matrix_c_from_json('public/noroeste.json')
+# Algorithm.matrix_c_from_json('public/uploads/upload.json')
 # # # #puts "matrix c"
 # # # #puts Converter.matrix_to_string(Algorithm.matrix_c)
 # Algorithm.floyd_algorithm
+# Algorithm.teitz_bart(2)
+# h = Algorithm.center_hash_proximity
+# binding.pry
+# Algorithm.center_hash_paths(h)
 # #  binding.pry
 # # #puts "matrix c2"
 # binding.pry
