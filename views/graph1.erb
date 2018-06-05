@@ -165,6 +165,14 @@
     var ids = $(".selected-item").map(function() {
       return this.name;
     }).get();
+    if (ids.length < 3) {
+      alert('Número inválido de nós selecionados!')
+    }
+    else {
+      ids_hash = {};
+      ids_hash['ids'] = ids;
+      window.location = '/create_subgraph?selected='+JSON.stringify(ids_hash);
+    }
   }
 
   sigma.parsers.json(fullname, {
