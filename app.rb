@@ -32,12 +32,28 @@ get '/graph1' do
 end
 
 get '/create_subgraph' do
-  selected_nodes = params[:selected]
+  param_ids = params[:selected]
+  unless param_ids.nil?
+    parsed_ids = JSON.parse(param_ids)['ids']
+    selected_nodes = parsed_ids.map(&:to_i)
+  end
+  if File.exist? 'public/uploads/upload.json'
+    filename = 'public/uploads/upload.json'
+  else
+    filename = 'public/uploads/default.json'
+  end
+  # First graph matrix generation
+  Algorithm.matrix_c_from_json(filename)
+  Algorithm.floyd_algorithm
+
   if selected_nodes.nil?
-    file = File.read('public/uploads/upload.json')
+    file = File.read(filename)
     File.write('public/uploads/subgraph.json', file)
   else
+    Algorithm.generate_subgraph(selected_nodes)
   end
+  Algorithm.matrix_c_from_json('public/uploads/subgraph.json')
+  Algorithm.floyd_algorithm
   redirect '/graph2'
 end
 
