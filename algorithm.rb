@@ -11,6 +11,14 @@ class Algorithm
   @centers = []
   @edges = []
   @nodes = []
+  @g_matrix_c = Hash.new
+  @g_matrix_p = Hash.new
+  @g_matrix_p2 = Hash.new
+  @g_matrix_c2 = Hash.new
+  @g_centers = []
+  @g_edges = []
+  @g_nodes = []
+  @correlation_list = []
 
   def self.matrix_c
     @matrix_c
@@ -336,12 +344,88 @@ class Algorithm
     end
   end
 
+  def self.generate_subgraph(selected_nodes)
+    if selected_nodes.size < 2
+      return -1
+    end
+    # Pass matrix and other info to g_ variables
+    @g_matrix_c = @matrix_c
+    @g_matrix_p = @matrix_p
+    @g_matrix_p2 = @matrix_p2
+    @g_matrix_c2 = @matrix_c2
+    @g_edges = @edges
+    @g_nodes = @nodes
+    # Populating nodes
+    new_file_data = {}
+    new_file_data['bidirectional'] = 1 # TODO: get bidirectional from file
+    new_file_data['nodes'] = []
+    id_counter = 0
+    @g_nodes.each do |n|
+      if selected_nodes.include?(n['id'])
+        json_node = {}
+        json_node['id'] = id_counter
+        json_node['label'] = n['label']
+        json_node['x'] = n['x']
+        json_node['y'] = n['y']
+        json_node['size'] = n['size']
+        new_file_data['nodes'].push(json_node)
+        @correlation_list[id_counter] = n["id"].to_i
+        id_counter += 1
+      end
+    end
+    # Populating edges
+    new_file_data['edges'] = []
+    id_counter = 0
+    selected_nodes.each do |n1|
+      selected_nodes.each do |n2|
+        unless n1 >= n2
+          sp = shortest_path(n1, n2)
+          if sp.size > 2
+            if ((sp & selected_nodes) == [n1, n2]) || ((sp & selected_nodes) == [n2, n1])
+              # add with g_path
+              json_edge = {}
+              json_edge['id'] = id_counter
+              json_edge['source'] = @correlation_list.index(n1)
+              json_edge['target'] = @correlation_list.index(n2)
+              json_edge['dist'] = shortest_distance(n1, n2)
+              json_edge['g_path'] = sp
+              id_counter += 1
+              new_file_data['edges'].push(json_edge)
+            end
+          else
+            # add without description
+            json_edge = {}
+            json_edge['id'] = id_counter
+            json_edge['source'] = @correlation_list.index(n1)
+            json_edge['target'] = @correlation_list.index(n2)
+            json_edge['dist'] = shortest_distance(n1, n2)
+            id_counter += 1
+            new_file_data['edges'].push(json_edge)
+          end
+        end
+      end
+    end
+
+    # clean variables
+    @matrix_c = Hash.new
+    @matrix_p = Hash.new
+    @matrix_p2 = Hash.new
+    @matrix_c2 = Hash.new
+    @centers = []
+    @edges = []
+    @nodes = []
+    out = JSON.pretty_generate(new_file_data)
+    File.write('public/uploads/subgraph.json', out)
+    return 1
+  end
 end
 
-# Algorithm.matrix_c_from_json('public/uploads/upload.json')
-# # # #puts "matrix c"
-# # # #puts Converter.matrix_to_string(Algorithm.matrix_c)
+# Algorithm.matrix_c_from_json('public/noroeste.json')
+# # # # #puts "matrix c"
+# # # # #puts Converter.matrix_to_string(Algorithm.matrix_c)
 # Algorithm.floyd_algorithm
+# Algorithm.generate_subgraph([1,2,3])
+
 # Algorithm.teitz_bart(2)
 # h = Algorithm.center_hash_proximity
 # binding.pry
