@@ -64,9 +64,20 @@
       <div id="info-container">
         <div id="algorithm-pane">
           <div>
+            <p>Número de centros para cálculo</p>
             <input type="number" id="tb-centers"><br>
             <button onclick="calculateTB()">Teitz & Bart</button><br>
             <input type="checkbox" id="show-each-centers-path" value="Bike">Mostrar melhor rota para cada centro<br>
+            <hr>
+            <% unless centers.nil? || centers.size < 3 %>
+              <p>Calcular melhor rota entre centros começando por:</p>
+              <select id="select-starting-center">
+                <% centers.each do |c|%>
+                  <option value= <%= nodes[c]['id'].to_s %> > <%= nodes[c]['label'] %></option>
+                <% end %>
+              </select>
+              <button onclick="centersPath()">Melhor rota entre centros</button><br>
+            <% end %>
           </div>
         </div>
         <div id="nodes-info">
@@ -108,6 +119,7 @@
       window.location = '/graph2?nc=' + ncenters;
     }
   }
+
   var centers = [];
   <% if centers.size > 0 %>
     centers = <%= centers.inspect %>
@@ -127,6 +139,47 @@
 
   var instance_nodes = [];
   var instance_edges = [];
+
+
+  centersPath = function() {
+    var starting = $('#select-starting-center').val();
+    var path = centers;
+    if (path.indexOf(starting) > 0) {
+      path.splice(path.indexOf(starting), 1);
+      path.unshift(starting);
+    }
+    var path_array = [];
+    var url = '/centers_path?centers=' + JSON.stringify(path);
+    $.get(url, function(data) {
+      path_array = JSON.parse(data);
+      colorCentersPath(path_array);
+    });
+  };
+
+  colorCentersPath = function(array) {
+    path_array = array;
+    var path_info_string = "Rota entre centros - \n";
+    path_array.forEach(function(p, i){
+      if (p != path_array[path_array.length-1]){
+        if (centers.includes(p)){
+          path_info_string += '<b>'+instance_nodes[p].label +'</b> > ';
+        }else {
+          path_info_string += instance_nodes[p].label +' > ';
+        }
+        var pindex = i;
+        var pnext = path_array[i+1];
+        instance_edges.forEach(function(e){
+          if ((e.source == p && e.target == pnext) || ((e.target == p && e.source == pnext))){
+            e.color = '#3333ff';
+          }
+        });
+      } else { path_info_string += '<b>'+instance_nodes[p].label+'</b>'; }
+    });
+    update_node_info(path_info_string);
+    var s = sigma.instances(0);
+    s.refresh();
+  }
+
 
   sigma.parsers.json(fullname, {
     container: 'graph-container',
