@@ -307,6 +307,24 @@ class Algorithm
     end
   end
 
+  def self.calculate_extended_path(array)
+    inserted_counter = 0
+    ext_array = array[0..array.length]
+    array.each_with_index do |a,i|
+      next if a == array.last
+      path = shortest_path(a, array[i+1])
+      if path.size > 2
+        elmnts_to_insert = path.drop(1)
+        elmnts_to_insert = elmnts_to_insert.reverse.drop(1).reverse
+        elmnts_to_insert.reverse.each do |e|
+          ext_array.insert(i + 1 + inserted_counter, e)
+        end
+        inserted_counter += elmnts_to_insert.size
+      end
+    end
+    ext_array
+  end
+
   def self.calculate_route_length(array)
     length = 0
     array.each_with_index do |n, i|
