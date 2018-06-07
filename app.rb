@@ -85,29 +85,40 @@ get '/graph2' do
                            edges: edges,
                            centers: centers,
                            prox_hash: proximity_hash.to_json,
-                           cpath_hash: centers_path_hash.to_json}
+                           cpath_hash: centers_path_hash.to_json
+                           }
 end
 
 post '/upload' do
-    tempfile = params[:file][:tempfile]
-    filename = params[:file][:filename]
-    if File.extname(filename) == '.csv'
-      FileUtils.cp(tempfile.path, "public/uploads/upload.csv")
-      Converter.csv_to_json("public/uploads/upload.csv", "public/uploads/upload.json")
-      if File.exist?("public/uploads/upload.json")
-        redirect "/graph1?graph=upload.json"
-      else
-        redirect "/?error=2"
-      end
-    elsif File.extname(filename) == '.json'
-      FileUtils.cp(tempfile.path, "public/uploads/upload.json")
-      if File.exist?("public/uploads/upload.json")
-        redirect "/graph1?graph=upload.json"
-      else
-        redirect "/?error=2"
-      end
-      redirect "/?error=1"
+  tempfile = params[:file][:tempfile]
+  filename = params[:file][:filename]
+  if File.extname(filename) == '.csv'
+    FileUtils.cp(tempfile.path, "public/uploads/upload.csv")
+    Converter.csv_to_json("public/uploads/upload.csv", "public/uploads/upload.json")
+    if File.exist?("public/uploads/upload.json")
+      redirect "/graph1?graph=upload.json"
     else
-      redirect "/?error=1"
+      redirect "/?error=2"
     end
+  elsif File.extname(filename) == '.json'
+    FileUtils.cp(tempfile.path, "public/uploads/upload.json")
+    if File.exist?("public/uploads/upload.json")
+      redirect "/graph1?graph=upload.json"
+    else
+      redirect "/?error=2"
+    end
+    redirect "/?error=1"
+  else
+    redirect "/?error=1"
+  end
 end
+
+get '/centers_path' do
+  c_param = params[:centers]
+  centers = JSON.parse(c_param)
+  arr_path = Algorithm.nearest_neighbour_path(centers)
+  arr_path = Algorithm.two_opt_best_route(arr_path)
+  ext_path = Algorithm.calculate_extended_path(arr_path)
+  return ext_path.to_json
+end
+
