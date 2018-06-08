@@ -228,6 +228,8 @@ class Algorithm
   end
 
   def self.center_hash_paths(hash_input)
+    puts "######### Hash de rotas para cada centro #########"
+
     center_proximity = hash_input
     keys = center_proximity.keys
     centers = keys.map(&:to_i)
@@ -235,10 +237,11 @@ class Algorithm
     centers.each do |c|
       hash_centers_path[c.to_s] = []
       arr_path = center_proximity[c.to_s]
-      arr_path = [c] + arr_path
-      arr_path = nearest_neighbour_path(arr_path)
-      arr_path = two_opt_best_route(arr_path)
-      hash_centers_path[c.to_s] = arr_path
+      # Adding beginning and end for closed route
+      arr_path_c = arr_path.first == c ? (arr_path + [c]) : ([c] + arr_path + [c])
+      arr_path_c = nearest_neighbour_path(arr_path_c)
+      arr_path_c = two_opt_best_route(arr_path_c)
+      hash_centers_path[c.to_s] = arr_path_c
     end
     begin
       full_path_hash = {}
@@ -246,21 +249,26 @@ class Algorithm
         full_path_hash[c.to_s] = hash_centers_path[c.to_s][0..hash_centers_path[c.to_s].length]
       end
       centers.each do |c|
+        "Calculando rota extendida para o centro #{c} | Rota inicial: #{hash_centers_path[c.to_s]}"
         inserted_counter = 0
         hash_centers_path[c.to_s].each_with_index do |a,i|
           next if a == hash_centers_path[c.to_s].last
-          puts "calculando rota do centro #{c} | node: #{a}"
+          puts "Calculando rota do centro #{c} | node: #{a}"
           path = shortest_path(a, hash_centers_path[c.to_s][i+1])
           if path.size > 2
             elmnts_to_insert = path.drop(1)
             elmnts_to_insert = elmnts_to_insert.reverse.drop(1).reverse
+            puts "Inserindo elementos: #{elmnts_to_insert}"
             elmnts_to_insert.reverse.each do |e|
               full_path_hash[c.to_s].insert(i + 1 + inserted_counter, e)
+              puts "Caminho atual: #{full_path_hash[c.to_s]}"
             end
             inserted_counter += elmnts_to_insert.size
           end
         end
       end
+      puts "####################################################"
+
       return full_path_hash
     rescue => e
       puts e.backtrace
@@ -268,6 +276,7 @@ class Algorithm
   end
 
   def self.two_opt_best_route(array)
+    puts "######## Iniciando 2-OPT para o vetor: #{array} #######"
     begin
       if array.size.zero?
         return -1
@@ -277,18 +286,18 @@ class Algorithm
         test_array = array[0..array.length]
         no_swap = false
         while no_swap == false
-          puts "comecando loop com array #{route_result.to_s}"
+          puts "verificacao com caminho #{route_result.to_s}"
           no_swap = true
           route_result.each_with_index do |n, i|
             break if no_swap == false
             route_result.each_with_index do |m, j|
               break if no_swap == false
-              next if j == i || m == route_result.first || n == route_result.first
+              next if j == i || [m, n].include?(route_result.first) || [m, n].include?(route_result.last)
               test_array[i] = m
               test_array[j] = n
               length = calculate_route_length(test_array)
               if length < min_distance
-                puts "trocando #{route_result.to_s} l:#{min_distance} por #{test_array.to_s} l:#{length}"
+                puts "trocando #{route_result.to_s} d:#{min_distance} | por #{test_array.to_s} d:#{length}"
                 no_swap = false
                 min_distance = length
                 route_result = test_array[0..test_array.length]
@@ -298,7 +307,9 @@ class Algorithm
             end
           end
         end
-        puts "final length: #{calculate_route_length(route_result)}"
+        puts "2-OPT caminho final: #{route_result}"
+        puts "Distancia do percurso final: #{calculate_route_length(route_result)}"
+        puts "####################################################"
         return route_result
       end
     rescue StandardError => e
@@ -308,6 +319,8 @@ class Algorithm
   end
 
   def self.calculate_extended_path(array)
+    puts "########## Calculando rota extendida de: #{array} ##############"
+
     inserted_counter = 0
     ext_array = array[0..array.length]
     array.each_with_index do |a,i|
@@ -316,12 +329,16 @@ class Algorithm
       if path.size > 2
         elmnts_to_insert = path.drop(1)
         elmnts_to_insert = elmnts_to_insert.reverse.drop(1).reverse
+        puts "Inserindo elementos: #{elmnts_to_insert}"
+
         elmnts_to_insert.reverse.each do |e|
           ext_array.insert(i + 1 + inserted_counter, e)
         end
         inserted_counter += elmnts_to_insert.size
       end
     end
+    puts "Rota extendida final: #{ext_array}"
+    puts "####################################################"
     ext_array
   end
 
@@ -336,11 +353,14 @@ class Algorithm
   end
 
   def self.nearest_neighbour_path(array)
+    puts "####### Vizinho mais proximo para o vetor: #{array} ##########"
+
     begin
       if array.size.zero?
         return -1
       else
         path = [array.first]
+        puts "Iniciando com vetor: #{path}"
         unused_nodes = array - [array.first]
         while unused_nodes.size > 0
           min_distance = Float::INFINITY
@@ -351,9 +371,15 @@ class Algorithm
               min_distance = shortest_distance(path.last, n)
             end
           end
+          puts "Adicionando no [#{selected_node}]"
           path.push(selected_node)
           unused_nodes = unused_nodes - [selected_node]
         end
+        puts "Fechando rota com [#{selected_node}]"
+
+        path.push(array.first)
+        puts "Rota com vizinho mais proximo: #{path}"
+        puts "####################################################"
         return path
       end
     rescue StandardError => e
