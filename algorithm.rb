@@ -276,11 +276,12 @@ class Algorithm
   end
 
   def self.two_opt_best_route(array)
-    puts "######## Iniciando 2-OPT para o vetor: #{array} #######"
     begin
       if array.size.zero?
         return -1
       else
+        puts "######## Iniciando 2-OPT para o vetor: #{array} #######"
+        puts "Distancia total inicial: #{calculate_route_length(array)}"
         min_distance = calculate_route_length(array)
         route_result = array[0..array.length]
         test_array = array[0..array.length]
@@ -390,11 +391,12 @@ class Algorithm
   end
 
   def self.nearest_insertion_path(array)
-    puts "####### Insercao do mais proximo para o vetor: #{array} ##########"
     begin
       if array.size.zero?
         return -1
       else
+        puts "####### Insercao do mais proximo para o vetor: #{array} ##########"
+        puts "Distancia total inicial: #{calculate_route_length(array)}"
         path = [array.first]
         puts "Iniciando com vetor: #{path}"
 
@@ -441,11 +443,12 @@ class Algorithm
   end
 
   def self.farthest_insertion_path(array)
-    puts "####### Insercao do mais distante para o vetor: #{array} ##########"
     begin
       if array.size.zero?
         return -1
       else
+        puts "####### Insercao do mais distante para o vetor: #{array} ##########"
+        puts "Distancia total inicial: #{calculate_route_length(array)}"
         path = [array.first]
         puts "Iniciando com vetor: #{path}"
 
