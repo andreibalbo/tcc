@@ -142,12 +142,8 @@
 
 
   centersPath = function() {
-    var starting = $('#select-starting-center').val();
     var path = centers;
-    if (path.indexOf(starting) > 0) {
-      path.splice(path.indexOf(starting), 1);
-      path.unshift(starting);
-    }
+    path_array = path.push(path[0]);
     var path_array = [];
     var url = '/centers_path?centers=' + JSON.stringify(path);
     $.get(url, function(data) {
@@ -160,9 +156,9 @@
     path_array = array;
     var path_info_string = "Rota entre centros - \n";
     path_array.forEach(function(p, i){
-      if (p != path_array[path_array.length-1]){
+      if (i != (path_array.length-1)){
         if (centers.includes(p)){
-          path_info_string += '<b>'+instance_nodes[p].label +'</b> > ';
+          path_info_string += instance_nodes[p].label +' > ';
         }else {
           path_info_string += instance_nodes[p].label +' > ';
         }
@@ -173,7 +169,7 @@
             e.color = '#3333ff';
           }
         });
-      } else { path_info_string += '<b>'+instance_nodes[p].label+'</b>'; }
+      } else { path_info_string += instance_nodes[p].label; }
     });
     update_node_info(path_info_string);
     var s = sigma.instances(0);
@@ -280,7 +276,7 @@
             var path_info_string = "Cidade centro - "+ node.label +"\n";
             path_info_string += "Melhor rota:\n"
             path_array.forEach(function(p, i){
-              if (p != path_array[path_array.length-1]){
+              if (i != (path_array.length-1)){
                 path_info_string += instance_nodes[p].label +" > ";
                 var pindex = i;
                 var pnext = path_array[i+1];
