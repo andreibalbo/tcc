@@ -371,7 +371,7 @@ class Algorithm
               min_distance = shortest_distance(path.last, n)
             end
           end
-          puts "Adicionando no [#{selected_node}]"
+          puts "Adicionando node [#{selected_node}]"
           path.push(selected_node)
           unused_nodes = unused_nodes - [selected_node]
         end
@@ -379,6 +379,109 @@ class Algorithm
 
         path.push(array.first)
         puts "Rota com vizinho mais proximo: #{path}"
+        puts "Distancia total: #{calculate_route_length(path)}"
+        puts "####################################################"
+        return path
+      end
+    rescue StandardError => e
+      puts e.backtrace
+      return -1
+    end
+  end
+
+  def self.nearest_insertion_path(array)
+    puts "####### Insercao do mais proximo para o vetor: #{array} ##########"
+    begin
+      if array.size.zero?
+        return -1
+      else
+        path = [array.first]
+        puts "Iniciando com vetor: #{path}"
+
+        unused_nodes = array - [array.first]
+        while unused_nodes.size > 0
+          min_distance = Float::INFINITY
+          selected_node = nil
+          unused_nodes.each do |n|
+            path.each do |path_n|
+              if shortest_distance(path_n, n) < min_distance
+                selected_node = n
+                min_distance = shortest_distance(path_n, n)
+              end
+            end
+          end
+          to_minimize = Float::INFINITY
+          position = 0
+
+          path.each_with_index do |n, i|
+            if i == (path.length - 1)
+              value = (shortest_distance(n, selected_node) + shortest_distance(array.first, selected_node)) - shortest_distance(n, array.first)
+            else
+              value = (shortest_distance(n, selected_node) + shortest_distance(path[i+1], selected_node)) - shortest_distance(n, path[i+1])
+            end
+            if value < to_minimize
+              to_minimize = value
+              position = i + 1
+            end
+          end
+          puts "Inserindo #{selected_node} na posicao #{position}"
+          path.insert(position, selected_node)
+          unused_nodes = unused_nodes - [selected_node]
+        end
+        path.push(array.first)
+        puts "Rota com insercao do mais proximo: #{path}"
+        puts "Distancia total: #{calculate_route_length(path)}"
+        puts "####################################################"
+        return path
+      end
+    rescue StandardError => e
+      puts e.backtrace
+      return -1
+    end
+  end
+
+  def self.farthest_insertion_path(array)
+    puts "####### Insercao do mais distante para o vetor: #{array} ##########"
+    begin
+      if array.size.zero?
+        return -1
+      else
+        path = [array.first]
+        puts "Iniciando com vetor: #{path}"
+
+        unused_nodes = array - [array.first]
+        while unused_nodes.size > 0
+          min_distance = 0
+          selected_node = nil
+          unused_nodes.each do |n|
+            path.each do |path_n|
+              if shortest_distance(path_n, n) > min_distance
+                selected_node = n
+                min_distance = shortest_distance(path_n, n)
+              end
+            end
+          end
+          to_minimize = Float::INFINITY
+          position = 0
+
+          path.each_with_index do |n, i|
+            if i == (path.length - 1)
+              value = (shortest_distance(n, selected_node) + shortest_distance(array.first, selected_node)) - shortest_distance(n, array.first)
+            else
+              value = (shortest_distance(n, selected_node) + shortest_distance(path[i+1], selected_node)) - shortest_distance(n, path[i+1])
+            end
+            if value < to_minimize
+              to_minimize = value
+              position = i + 1
+            end
+          end
+          puts "Inserindo #{selected_node} na posicao #{position}"
+          path.insert(position, selected_node)
+          unused_nodes = unused_nodes - [selected_node]
+        end
+        path.push(array.first)
+        puts "Rota com insercao do mais distante: #{path}"
+        puts "Distancia total: #{calculate_route_length(path)}"
         puts "####################################################"
         return path
       end
@@ -474,14 +577,16 @@ end
 # h = Algorithm.center_hash_proximity
 # binding.pry
 # Algorithm.center_hash_paths(h)
-# #  binding.pry
-# # #puts "matrix c2"
+# binding.pry
+# #puts "matrix c2"
 # binding.pry
 # #puts Converter.matrix_to_string(Algorithm.matrix_c2)
 # #puts "matrix p2"
 # #puts Converter.matrix_to_string(Algorithm.matrix_p2)
-# path = [3, 4, 0, 2, 1]
-# binding.pry
-# #puts Algorithm.two_opt_best_route(path)
+# path = [3, 4, 0, 2, 1, 3]
+# Algorithm.nearest_neighbour_path(path)
+# Algorithm.nearest_insertion_path(path)
+# Algorithm.farthest_insertion_path(path)
+# Algorithm.two_opt_best_route(path)
 # puts "teitzbart centers: #{Algorithm.teitz_bart(2).to_s}"
 # binding.pry
