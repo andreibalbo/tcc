@@ -70,13 +70,7 @@
             <input type="checkbox" id="show-each-centers-path" value="Bike">Mostrar melhor rota para cada centro<br>
             <hr>
             <% unless centers.nil? || centers.size < 3 %>
-              <p>Calcular melhor rota entre centros começando por:</p>
-              <select id="select-starting-center">
-                <% centers.each do |c|%>
-                  <option value= <%= nodes[c]['id'].to_s %> > <%= nodes[c]['label'] %></option>
-                <% end %>
-              </select>
-              <button onclick="centersPath()">Melhor rota entre centros</button><br>
+              <button onclick="centersPath()">Calcular melhor rota entre centros</button><br>
             <% end %>
           </div>
         </div>
@@ -146,8 +140,8 @@
     });
   };
 
-  colorCentersPath = function(array) {
-    var path_array = path_hash['hash'];
+  colorCentersPath = function(path_hash) {
+    var path_array = path_hash['path'];
     var total_dist = path_hash['dist'];
     var path_info_string = "Rota entre centros - \n";
     path_array.forEach(function(p, i){
