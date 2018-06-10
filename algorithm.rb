@@ -325,7 +325,7 @@ class Algorithm
     inserted_counter = 0
     ext_array = array[0..array.length]
     array.each_with_index do |a,i|
-      next if a == array.last
+      next if i == (array.length-1)
       path = shortest_path(a, array[i+1])
       if path.size > 2
         elmnts_to_insert = path.drop(1)
