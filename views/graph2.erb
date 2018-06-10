@@ -77,6 +77,9 @@
         <div id="nodes-info">
           <textarea id="nodes-info-text"> Nodes Info </textarea>
         </div>
+        <div id="export-section">
+          <button id="button-export" onclick="exportToCSV()" disabled="disabled">Exportar para CSV</button>
+        </div>
         <div style="display: none;">
           <input type="text" id="centers-array" value=<%= centers.to_s %>>
         </div>
@@ -101,6 +104,11 @@
  * configuration object. The plugin will just add the "graph" key to it
  * before the instanciation.
  */
+  window.onload = function(){
+    if (centers.length > 0){
+      $('#button-export').prop('disabled', false);
+    }
+  };
 
   var fullname = "uploads/subgraph.json";
 
@@ -404,7 +412,7 @@
   #algorithm-pane {
     background-color: white;
     width: 260px;
-    height: 422px;
+    height: 344px;
     position: relative;
     display: inline-block;
     border: 1px solid black;
@@ -435,6 +443,16 @@
     margin-left: 8px;
 
   }
+
+  #export-section {
+    width: 260px;
+    height: 100px;
+  }
+
+  #button-export {
+    margin: 20px;
+  }
+
   #selected-nodes {
     background-color: white;
     margin-right: 12px;
