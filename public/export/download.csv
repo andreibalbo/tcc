@@ -1,0 +1,31 @@
+Relatório:;
+GRAFO ORIGINAL:;
+Cidades:;Sta Isabel;Planaltina;Loanda;Sta Monica;Mt Castelo;Apucarana;Aparecida;Rolandia;
+
+SUBGRAFO:
+Cidades:;Sta Isabel;Planaltina;Loanda;Sta Monica;Mt Castelo;Apucarana;Aparecida;Rolandia;
+
+Número de centros:;3;
+Cidades abrangidas:;Centro: Rolandia;
+Cidades:;Planaltina;Apucarana;Rolandia;
+Centro: Sta Isabel;
+Cidades:;Sta Isabel;Loanda;Mt Castelo;
+Centro: Sta Monica;
+Cidades:;Sta Monica;Aparecida;
+
+Melhor rota entre os centros;
+Rota:;Rolandia;Sta Monica;Sta Isabel;Sta Monica;Rolandia;
+Distância total:;52;
+
+Melhor rota entre as cidades de centros:;
+Centro:;Rolandia;
+Rota:;Rolandia;Planaltina;Apucarana;Rolandia;
+Distância total:;26;
+Centro:;Sta Isabel;
+Rota:;Sta Isabel;Loanda;Mt Castelo;Sta Isabel;
+Distância total:;37;
+Centro:;Sta Monica;
+Rota:;Sta Monica;Aparecida;Sta Monica;
+Distância total:;20;
+
+FIM;

@@ -116,65 +116,25 @@ end
 get '/centers_path' do
   c_param = params[:centers]
   nodes = JSON.parse(c_param)
-  min_distance = Float::INFINITY
-  min_path = nil
-  nn_path = Algorithm.nearest_neighbour_path(nodes)
-  nn_dist = Algorithm.calculate_route_length(nn_path)
-  if nn_dist < min_distance
-    min_distance = nn_dist
-    min_path = nn_path
-  end
-  ni_path = Algorithm.nearest_insertion_path(nodes)
-  ni_dist = Algorithm.calculate_route_length(ni_path)
-  if ni_dist < min_distance
-    min_distance = ni_dist
-    min_path = ni_path
-  end
-  fi_path = Algorithm.farthest_insertion_path(nodes)
-  fi_dist = Algorithm.calculate_route_length(fi_path)
-  if fi_dist < min_distance
-    min_distance = fi_dist
-    min_path = fi_path
-  end
-  arr_path = Algorithm.two_opt_best_route(min_path)
-  ext_path = Algorithm.calculate_extended_path(arr_path)
-  ext_dist = Algorithm.calculate_route_length(ext_path)
-
-  return_hash = {}
-  return_hash['path'] = ext_path
-  return_hash['dist'] = ext_dist
+  return_hash = Algorithm.best_route_all_algorithms(nodes)
   return return_hash.to_json
 end
 
 get '/best_path' do
   arr_param = params[:arr]
   nodes = JSON.parse(arr_param)
-  min_distance = Float::INFINITY
-  min_path = nil
-  nn_path = Algorithm.nearest_neighbour_path(nodes)
-  nn_dist = Algorithm.calculate_route_length(nn_path)
-  if nn_dist < min_distance
-    min_distance = nn_dist
-    min_path = nn_path
-  end
-  ni_path = Algorithm.nearest_insertion_path(nodes)
-  ni_dist = Algorithm.calculate_route_length(ni_path)
-  if ni_dist < min_distance
-    min_distance = ni_dist
-    min_path = ni_path
-  end
-  fi_path = Algorithm.farthest_insertion_path(nodes)
-  fi_dist = Algorithm.calculate_route_length(fi_path)
-  if fi_dist < min_distance
-    min_distance = fi_dist
-    min_path = fi_path
-  end
-  arr_path = Algorithm.two_opt_best_route(min_path)
-  ext_path = Algorithm.calculate_extended_path(arr_path)
-  ext_dist = Algorithm.calculate_route_length(ext_path)
-
-  return_hash = {}
-  return_hash['path'] = ext_path
-  return_hash['dist'] = ext_dist
+  return_hash = Algorithm.best_route_all_algorithms(nodes)
   return return_hash.to_json
+end
+
+get '/download' do
+  type = params[:type]
+  if type == 'csv'
+    filename = Algorithm.export_to_csv
+  else
+    filename = Algorithm.export_to_txt
+  end
+  file = File.join('public/export', filename)
+  return file.to_json
+  # send_file "public/export/#{filename}", :filename => filename, :type => 'application/octet-stream'
 end
