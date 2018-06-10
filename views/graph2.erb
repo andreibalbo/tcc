@@ -130,12 +130,6 @@
     json_prox = <%= prox_hash.inspect %>
     proximity_hash = JSON.parse( json_prox );
   <% end %>
-  var centers_path_hash;
-  var json_cpath;
-  <% if cpath_hash.size > 0 %>
-    json_cpath = <%= cpath_hash.inspect %>
-    centers_path_hash = JSON.parse( json_cpath );
-  <% end %>
 
   var instance_nodes = [];
   var instance_edges = [];
@@ -143,17 +137,18 @@
 
   centersPath = function() {
     var path = centers;
-    path_array = path.push(path[0]);
     var path_array = [];
+    path.push(path[0]);
     var url = '/centers_path?centers=' + JSON.stringify(path);
     $.get(url, function(data) {
-      path_array = JSON.parse(data);
-      colorCentersPath(path_array);
+      path_hash = JSON.parse(data);
+      colorCentersPath(path_hash);
     });
   };
 
   colorCentersPath = function(array) {
-    path_array = array;
+    var path_array = path_hash['hash'];
+    var total_dist = path_hash['dist'];
     var path_info_string = "Rota entre centros - \n";
     path_array.forEach(function(p, i){
       if (i != (path_array.length-1)){
@@ -171,6 +166,7 @@
         });
       } else { path_info_string += instance_nodes[p].label; }
     });
+    path_info_string += "\nDistância total da rota: "+ total_dist;
     update_node_info(path_info_string);
     var s = sigma.instances(0);
     s.refresh();
@@ -232,15 +228,8 @@
 
       s.bind('clickNode', function(e) {
         //reset all nodes and edges color
-        s.graph.nodes().forEach(function(n) {
-          if (!centers.includes(n.id)){
-            n.color = '#000';
-          }
-        });
-        s.graph.edges().forEach(function(e) {
-          e.color = '#000';
-        });
-
+        resetNodesColor();
+        resetEdgesColor();
         var nodeId = e.data.node.id;
         var nodeInfo = e.data.node.label;
         neigh = s.graph.neighbors(nodeId);
@@ -272,23 +261,7 @@
             }
           });
           if (document.getElementById("show-each-centers-path").checked){
-            var path_array = centers_path_hash[node.id]
-            var path_info_string = "Cidade centro - "+ node.label +"\n";
-            path_info_string += "Melhor rota:\n"
-            path_array.forEach(function(p, i){
-              if (i != (path_array.length-1)){
-                path_info_string += instance_nodes[p].label +" > ";
-                var pindex = i;
-                var pnext = path_array[i+1];
-                instance_edges.forEach(function(e){
-                  if ((e.source == p && e.target == pnext) || ((e.target == p && e.source == pnext))){
-                    e.color = '#3333ff';
-                  }
-                });
-              } else { path_info_string += instance_nodes[p].label }
-            });
-            update_node_info(path_info_string);
-
+            getBestNodesPath(proximity_hash[node.id], node.id);
           }
 
           s.refresh();
@@ -302,6 +275,63 @@
 
     }
   );
+
+  resetNodesColor = function() {
+    var s = sigma.instances(0);
+    s.graph.nodes().forEach(function(n) {
+      if (!centers.includes(n.id)){
+        n.color = '#000';
+      }
+    });
+  }
+
+  resetEdgesColor = function() {
+    var s = sigma.instances(0);
+    s.graph.edges().forEach(function(e) {
+      e.color = '#000';
+    });
+  }
+
+  getBestNodesPath = function(array, center) {
+    var path = array;
+    var path_array = [];
+    var i = 0;
+    while (path[0] != center){
+      path = path.concat(path.splice(0,1));
+    }
+    path.push(path[0]);
+    var url = '/best_path?arr=' + JSON.stringify(path);
+    $.get(url, function(data) {
+      path_hash = JSON.parse(data);
+      colorBestPath(path_hash);
+    });
+  }
+
+  colorBestPath = function(path_hash) {
+    var path_array = path_hash['path'];
+    var total_dist = path_hash['dist'];
+
+    resetEdgesColor();
+    var s = sigma.instances(0);
+    var path_info_string = "Rota das cidades do centro: -" + instance_nodes[path_array[0]].label +" \n";
+
+    path_info_string += "Melhor rota:\n"
+    path_array.forEach(function(p, i){
+      if (i != (path_array.length-1)){
+        path_info_string += instance_nodes[p].label +" > ";
+        var pindex = i;
+        var pnext = path_array[i+1];
+        instance_edges.forEach(function(e){
+          if ((e.source == p && e.target == pnext) || ((e.target == p && e.source == pnext))){
+            e.color = '#3333ff';
+          }
+        });
+      } else { path_info_string += instance_nodes[p].label }
+    });
+    path_info_string += "\nDistância total da rota: "+ total_dist;
+    update_node_info(path_info_string);
+    s.refresh();
+  }
 
   function update_node_info(text){
     $("#nodes-info-text").val(text);

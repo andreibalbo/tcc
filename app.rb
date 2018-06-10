@@ -76,16 +76,16 @@ get '/graph2' do
     puts 'teitzbart done'
     proximity_hash = Algorithm.center_hash_proximity
     puts 'centerhash done'
-    centers_path_hash = Algorithm.center_hash_paths(proximity_hash)
-    puts 'centerspath hash done'
+    #centers_path_hash = Algorithm.center_hash_paths(proximity_hash)
+    #puts 'centerspath hash done'
   end
   nodes = Converter.json_nodes(filename)
   edges = Converter.json_edges(filename)
   erb :graph2, :locals => {nodes: nodes,
                            edges: edges,
                            centers: centers,
-                           prox_hash: proximity_hash.to_json,
-                           cpath_hash: centers_path_hash.to_json
+                           prox_hash: proximity_hash.to_json#,
+                           #cpath_hash: centers_path_hash.to_json
                            }
 end
 
@@ -115,10 +115,66 @@ end
 
 get '/centers_path' do
   c_param = params[:centers]
-  centers = JSON.parse(c_param)
-  arr_path = Algorithm.nearest_neighbour_path(centers)
-  arr_path = Algorithm.two_opt_best_route(arr_path)
+  nodes = JSON.parse(c_param)
+  min_distance = Float::INFINITY
+  min_path = nil
+  nn_path = Algorithm.nearest_neighbour_path(nodes)
+  nn_dist = Algorithm.calculate_route_length(nn_path)
+  if nn_dist < min_distance
+    min_distance = nn_dist
+    min_path = nn_path
+  end
+  ni_path = Algorithm.nearest_insertion_path(nodes)
+  ni_dist = Algorithm.calculate_route_length(ni_path)
+  if ni_dist < min_distance
+    min_distance = ni_dist
+    min_path = ni_path
+  end
+  fi_path = Algorithm.farthest_insertion_path(nodes)
+  fi_dist = Algorithm.calculate_route_length(fi_path)
+  if fi_dist < min_distance
+    min_distance = fi_dist
+    min_path = fi_path
+  end
+  arr_path = Algorithm.two_opt_best_route(min_path)
   ext_path = Algorithm.calculate_extended_path(arr_path)
-  return ext_path.to_json
+  ext_dist = Algorithm.calculate_route_length(ext_path)
+
+  return_hash = {}
+  return_hash['path'] = ext_path
+  return_hash['dist'] = ext_dist
+  return return_hash.to_json
 end
 
+get '/best_path' do
+  arr_param = params[:arr]
+  nodes = JSON.parse(arr_param)
+  min_distance = Float::INFINITY
+  min_path = nil
+  nn_path = Algorithm.nearest_neighbour_path(nodes)
+  nn_dist = Algorithm.calculate_route_length(nn_path)
+  if nn_dist < min_distance
+    min_distance = nn_dist
+    min_path = nn_path
+  end
+  ni_path = Algorithm.nearest_insertion_path(nodes)
+  ni_dist = Algorithm.calculate_route_length(ni_path)
+  if ni_dist < min_distance
+    min_distance = ni_dist
+    min_path = ni_path
+  end
+  fi_path = Algorithm.farthest_insertion_path(nodes)
+  fi_dist = Algorithm.calculate_route_length(fi_path)
+  if fi_dist < min_distance
+    min_distance = fi_dist
+    min_path = fi_path
+  end
+  arr_path = Algorithm.two_opt_best_route(min_path)
+  ext_path = Algorithm.calculate_extended_path(arr_path)
+  ext_dist = Algorithm.calculate_route_length(ext_path)
+
+  return_hash = {}
+  return_hash['path'] = ext_path
+  return_hash['dist'] = ext_dist
+  return return_hash.to_json
+end
