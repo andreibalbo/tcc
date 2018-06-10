@@ -78,7 +78,8 @@
           <textarea id="nodes-info-text"> Nodes Info </textarea>
         </div>
         <div id="export-section">
-          <button id="button-export" onclick="exportToCSV()" disabled="disabled">Exportar para CSV</button>
+          <button id="button-csv" onclick="exportToCSV()" disabled="disabled">Exportar para CSV</button>
+          <button id="button-txt" onclick="exportToTXT()" disabled="disabled">Exportar para TXT</button>
         </div>
         <div style="display: none;">
           <input type="text" id="centers-array" value=<%= centers.to_s %>>
@@ -106,7 +107,8 @@
  */
   window.onload = function(){
     if (centers.length > 0){
-      $('#button-export').prop('disabled', false);
+      $('#button-csv').prop('disabled', false);
+      $('#button-txt').prop('disabled', false);
     }
   };
 
@@ -120,6 +122,18 @@
     else {
       window.location = '/graph2?nc=' + ncenters;
     }
+  }
+
+  exportToCSV = function(){
+    var url = '/download?type=csv';
+    $.get(url, function() {
+    });
+  }
+
+  exportToTXT = function(){
+    var url = '/download?type=txt';
+    $.get(url, function() {
+    });
   }
 
   var centers = [];
@@ -315,7 +329,8 @@
 
     resetEdgesColor();
     var s = sigma.instances(0);
-    var path_info_string = "Rota das cidades do centro: -" + instance_nodes[path_array[0]].label +" \n";
+    var center = path_array[0]
+    var path_info_string = "Rota das cidades do centro: -" + instance_nodes[center].label +" \n";
 
     path_info_string += "Melhor rota:\n"
     path_array.forEach(function(p, i){
@@ -449,8 +464,11 @@
     height: 100px;
   }
 
-  #button-export {
-    margin: 20px;
+  #button-csv {
+    margin: 10px;
+  }
+  #button-txt {
+    margin: 10px;
   }
 
   #selected-nodes {
