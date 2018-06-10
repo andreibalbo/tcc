@@ -181,6 +181,7 @@
     function(s) {
       // We first need to save the original colors of our
       // nodes and edges, like this:
+      s.settings('doubleClickEnabled', false);
       s.graph.nodes().forEach(function(n) {
         n.originalColor = n.color;
       });
