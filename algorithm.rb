@@ -1,6 +1,7 @@
 require 'json'
 require 'pry-nav'
 require_relative 'converter'
+require 'csv'
 
 class Algorithm
 
@@ -567,6 +568,130 @@ class Algorithm
     out = JSON.pretty_generate(new_file_data)
     File.write('public/uploads/subgraph.json', out)
     return 1
+  end
+
+  def self.best_route_all_algorithms(array)
+    nodes = array
+    min_distance = Float::INFINITY
+    min_path = nil
+    nn_path = Algorithm.nearest_neighbour_path(nodes)
+    nn_dist = Algorithm.calculate_route_length(nn_path)
+    if nn_dist < min_distance
+      min_distance = nn_dist
+      min_path = nn_path
+    end
+    ni_path = Algorithm.nearest_insertion_path(nodes)
+    ni_dist = Algorithm.calculate_route_length(ni_path)
+    if ni_dist < min_distance
+      min_distance = ni_dist
+      min_path = ni_path
+    end
+    fi_path = Algorithm.farthest_insertion_path(nodes)
+    fi_dist = Algorithm.calculate_route_length(fi_path)
+    if fi_dist < min_distance
+      min_distance = fi_dist
+      min_path = fi_path
+    end
+    arr_path = Algorithm.two_opt_best_route(min_path)
+    ext_path = Algorithm.calculate_extended_path(arr_path)
+    ext_dist = Algorithm.calculate_route_length(ext_path)
+
+    return_hash = {}
+    return_hash['path'] = ext_path
+    return_hash['dist'] = ext_dist
+    return return_hash
+  end
+
+  def self.export_to_csv
+
+    File.delete('export/download.csv') if File.exists?('export/download.csv')
+
+    file_data = ''
+    # Create header
+    file_data += "Relatório:;\r\n"
+    # First graph nodes
+    file_data += "GRAFO ORIGINAL:;\r\n"
+    @g_nodes = @nodes if @g_nodes.size.zero?
+    file_data += "Cidades:;"
+    @g_nodes.each do |n|
+      file_data += "#{n['label']};"
+    end
+    file_data += "\r\n"
+    file_data += "\r\n"
+    # Subgraph nodes
+    file_data += "SUBGRAFO:\r\n"
+    file_data += "Cidades:;"
+    @nodes.each do |n|
+      file_data += "#{n['label']};"
+    end
+    file_data += "\r\n"
+    file_data += "\r\n"
+
+    # centers
+    file_data += "Número de centros:;"
+    file_data += "#{@centers.size};\r\n"
+    c_proximity = center_hash_proximity
+    file_data += 'Cidades abrangidas:;'
+    @centers.each do |c|
+      file_data += "Centro: #{@nodes[c]['label']};\r\n"
+      file_data += "Cidades:;"
+      c_proximity[c.to_s].each do |n|
+        file_data += "#{@nodes[n]['label']};"
+      end
+      file_data += "\r\n"
+    end
+    file_data += "\r\n"
+
+    # centers path
+    if @centers.size > 2
+      file_data += "Melhor rota entre os centros;\r\n"
+      path_array = @centers[0..@centers.length]
+      path_array.push(@centers[0])
+      path_hash = best_route_all_algorithms(path_array)
+
+      path = calculate_extended_path(path_hash['path'])
+      file_data += "Rota:;"
+      path.each do |n|
+        file_data += "#{@nodes[n]['label']};"
+      end
+      file_data += "\r\n"
+      file_data += "Distância total:;"
+      file_data += "#{path_hash['dist']};\r\n"
+
+      file_data += "\r\n"
+    end
+
+    #center nodes path
+    file_data += "Melhor rota entre as cidades de centros:;\r\n"
+    @centers.each do |c|
+      file_data += 'Centro:;'
+      file_data += "#{@nodes[c]['label']};\r\n"
+      if c_proximity[c.to_s].nil?
+        file_data += "Rota:;\r\n"
+      else
+        file_data += "Rota:;"
+        array = c_proximity[c.to_s][0..c_proximity[c.to_s].length]
+        while array[0] != c
+          array = array.rotate
+        end
+        array.push(array[0]) unless array.last == array.first
+        path_hash = best_route_all_algorithms(array)
+        path = calculate_extended_path(path_hash['path'])
+        path.each do |n|
+          file_data += "#{@nodes[n]['label']};"
+        end
+        file_data += "\r\n"
+        file_data += "Distância total:;"
+        file_data += "#{path_hash['dist']};\r\n"
+      end
+    end
+    file_data += "\r\n"
+    file_data += "FIM;\r\n"
+
+    # file generation
+
+    File.write('public/export/download.csv', file_data)
+    return 'download.csv'
   end
 end
 
