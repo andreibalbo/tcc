@@ -350,7 +350,7 @@
     resetEdgesColor();
     var s = sigma.instances(0);
     var center = path_array[0]
-    var path_info_string = "Rota das cidades do centro: -" + instance_nodes[center].label +" \n";
+    var path_info_string = "Rota das cidades do centro: " + instance_nodes[center].label +" \n";
 
     path_info_string += "Melhor rota:\n"
     path_array.forEach(function(p, i){
@@ -602,6 +602,19 @@
     border: 1px solid #ffffff;
     font-family: 'Verdana';
     text-decoration: none;
+  }
+
+  .button-default:disabled{
+    border: 1px solid #eee;
+    background-color: #eee;
+    color: #fff;
+    cursor: default;
+  }
+
+  .button-default[disabled]:hover {
+    background: #eee;
+    color: #fff;
+    border: 1px solid #eee;
   }
 
   .button-default:hover {

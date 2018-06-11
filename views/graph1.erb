@@ -76,7 +76,6 @@
         <div id="nodes-list">
           <p>Selecione nós para o Subgrafo aqui, ou clicando duas vezes no nó</p>
           <select id="select-nodes-add">
-            <option value="" disabled="disabled"></option>
             <% nodes.each do |n|%>
             <option value= <%= n['id'].to_s %> > <%= n['label'] %></option>
             <% end %>
@@ -140,7 +139,6 @@
     var selected_text = $('#select-nodes-add option:selected').text();
     $("#select-nodes-add option[value=" + selected_id + "]").attr('disabled', 'disabled');
     $( "#selected-nodes" ).append("<a class='selected-item' name='"+selected_id+"'>"+selected_text+"<div class='hover-delete' onclick='deleteSelected(this)'>Remover</div></a>" );
-    $('#select-nodes-add').prop('selectedIndex',0);
     var s = sigma.instances()[0];
     s.graph.nodes()[selected_id].color = '#0f0';
     s.graph.edges().forEach(function(e){
