@@ -686,8 +686,6 @@ class Algorithm
       end
     end
     file_data += "\r\n"
-    file_data += "FIM;\r\n"
-
     # file generation
 
     File.write('public/export/download.csv', file_data)
