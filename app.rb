@@ -52,6 +52,7 @@ get '/create_subgraph' do
   Algorithm.floyd_algorithm
 
   if selected_nodes.nil?
+    Algorithm.reset_graph_instances
     file = File.read(filename)
     File.write('public/uploads/subgraph.json', file)
   else
