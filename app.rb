@@ -16,6 +16,11 @@ use_ssl = true
 # First page just redirects to 'init' route.
 get '/' do
   error = params[:error]
+  erb :home, :locals => {error: params[:error]}
+end
+
+get '/index' do
+  error = params[:error]
   erb :index, :locals => {error: params[:error]}
 end
 
