@@ -102,6 +102,9 @@ class Algorithm
     size = Math.sqrt(@matrix_c.size).to_i
 
     Algorithm.generate_matrix_p
+
+    puts "matrix p inicial #{Converter.matrix_to_string(@matrix_p)}"
+
     @matrix_c2 = @matrix_c
     @matrix_p2 = @matrix_p
     # FLoyd
@@ -147,6 +150,7 @@ class Algorithm
   end
 
   def self.teitz_bart(ncenters)
+    puts "######### Teitz & Bart para #{ncenters} centros #########"
     size = Math.sqrt(@matrix_c.size).to_i
     if ncenters > size/2 || ncenters < 1
       return -1
@@ -167,9 +171,11 @@ class Algorithm
 
     while non_analysed.size > 0
       # Teitz&Bart Algorithm
-
+      puts "Inicio do loop com centros: #{@centers}"
+      puts "Nao analisados: #{non_analysed} | Analisados: #{analysed} "
       # random current node
       current_node = non_analysed.sample
+      puts "Analisando node #{current_node}"
       centers_backup = @centers[0..@centers.length]
       tdistances = []
       # swap with every center and calculate total distance
@@ -185,12 +191,15 @@ class Algorithm
         min_tdistance = node_min_d
         idx = tdistances.index(node_min_d)
         analysed.push(@centers[idx])
+        puts "Trocou centro #{@centers[idx]} pelo node #{current_node}"
         @centers[idx] = current_node
       else
         analysed.push(current_node)
       end
-        non_analysed = non_analysed - [current_node]
+      non_analysed = non_analysed - [current_node]
     end
+    puts "Teitz & Bart resultado - Centros #{@centers}"
+    puts "########################################"
     return @centers
   end
 
@@ -211,6 +220,7 @@ class Algorithm
     center_proximity.each_with_index do |c, i|
       total_distance += shortest_distance(i, c) unless c.nil?
     end
+    puts "Centros #{@centers} | Soma das distancias de cidades para os centros: #{total_distance}"
     total_distance
   end
 
@@ -703,18 +713,19 @@ class Algorithm
   end
 end
 
-# Algorithm.matrix_c_from_json('public/noroeste.json')
-# # # # #puts "matrix c"
-# # # # #puts Converter.matrix_to_string(Algorithm.matrix_c)
-# Algorithm.floyd_algorithm
+Converter.csv_to_json('public/noroeste_ampliado.csv', 'public/noroeste_ampliado.json')
+
+Algorithm.matrix_c_from_json('public/noroeste_ampliado.json')
+puts "matrix c inicial #{Converter.matrix_to_string(Algorithm.matrix_c)}"
+Algorithm.floyd_algorithm
+
+puts "matrix c apos floyd #{Converter.matrix_to_string(Algorithm.matrix_c2)}"
+puts "matrix p apos floyd #{Converter.matrix_to_string(Algorithm.matrix_p2)}"
 # Algorithm.generate_subgraph([1,2,3])
 
-# Algorithm.teitz_bart(2)
-# h = Algorithm.center_hash_proximity
-# binding.pry
-# Algorithm.center_hash_paths(h)
-# binding.pry
-# #puts "matrix c2"
+Algorithm.teitz_bart(2)
+binding.pry
+#puts "matrix c2"
 # binding.pry
 # #puts Converter.matrix_to_string(Algorithm.matrix_c2)
 # #puts "matrix p2"

@@ -174,9 +174,10 @@ class Converter
       size.times do |j|
         string += '['
         if matrix[[i,j]] > 10000
-          string += "∞"
+          string += "∞∞"
         else
-          string += "#{matrix[[i, j]]}"
+          value = matrix[[i, j]].to_s.rjust(2, '0')
+          string += "#{value}"
         end
         string += ']'
       end
