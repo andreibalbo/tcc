@@ -56,6 +56,7 @@ get '/create_subgraph' do
     file = File.read(filename)
     File.write('public/uploads/subgraph.json', file)
   else
+    File.delete('public/uploads/subgraph.json') if File.exist? 'public/uploads/subgraph.json'
     Algorithm.generate_subgraph(selected_nodes)
   end
   Algorithm.matrix_c_from_json('public/uploads/subgraph.json')
