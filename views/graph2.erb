@@ -173,14 +173,13 @@
     json_prox = <%= prox_hash.inspect %>
     proximity_hash = JSON.parse( json_prox );
   <% end %>
-
   var instance_nodes = [];
   var instance_edges = [];
 
 
   centersPath = function() {
     clearAllSelected();
-    var path = centers;
+    var path = centers.slice();
     var path_array = [];
     path.push(path[0]);
     var url = '/centers_path?centers=' + JSON.stringify(path);
@@ -408,17 +407,21 @@
   }
 
   getBestNodesPath = function(array, center) {
-    var path = array;
+    var path = array.slice();
+;
     var path_array = [];
     var i = 0;
+    debugger;
     while (path[0] != center){
+      debugger;
       path = path.concat(path.splice(0,1));
     }
+    debugger
     path.push(path[0]);
     var url = '/best_path?arr=' + JSON.stringify(path);
     $.get(url, function(data) {
       path_hash = JSON.parse(data);
-      colorBestPath(path_has, 1);
+      colorBestPath(path_hash, 1);
     });
   }
 
@@ -426,7 +429,7 @@
     var ids = $(".selected-item").map(function() {
       return this.name;
     }).get();
-    var path = ids;
+    var path = ids.slice();
     path.push(path[0]);
     var url = '/best_path?arr=' + JSON.stringify(path);
     $.get(url, function(data) {
