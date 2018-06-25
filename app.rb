@@ -129,6 +129,7 @@ end
 get '/best_path' do
   arr_param = params[:arr]
   nodes = JSON.parse(arr_param)
+  nodes = nodes.map(&:to_i)
   return_hash = Algorithm.best_route_all_algorithms(nodes)
   return return_hash.to_json
 end

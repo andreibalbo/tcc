@@ -164,7 +164,7 @@
       $("#select-nodes-add option[value=" + toggle_id + "]").removeAttr('disabled');
       s.graph.nodes()[toggle_id].color = '#000';
       s.refresh();
-      $(".selected-item[name"+id+"]").remove();
+      $(".selected-item[name="+id+"]").remove();
     }
     else {
       $("#select-nodes-add option[value=" + toggle_id + "]").attr('disabled', 'disabled');

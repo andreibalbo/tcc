@@ -376,7 +376,6 @@ class Algorithm
 
   def self.nearest_neighbour_path(array)
     puts "####### Vizinho mais proximo para o vetor: #{array} ##########"
-
     begin
       if array.size.zero?
         return -1
@@ -651,7 +650,7 @@ class Algorithm
     file_data += "Número de centros:;"
     file_data += "#{@centers.size};\r\n"
     c_proximity = center_hash_proximity
-    file_data += 'Abrangência dos centros:;\r\n'
+    file_data += "Abrangência dos centros:;\r\n"
     @centers.each do |c|
       file_data += "Centro: #{@nodes[c]['label']};\r\n"
       file_data += "Cidades abrangidas:;"
@@ -713,18 +712,18 @@ class Algorithm
   end
 end
 
-Converter.csv_to_json('public/noroeste_ampliado.csv', 'public/noroeste_ampliado.json')
+# Converter.csv_to_json('public/noroeste_ampliado.csv', 'public/noroeste_ampliado.json')
 
-Algorithm.matrix_c_from_json('public/noroeste_ampliado.json')
-puts "matrix c inicial #{Converter.matrix_to_string(Algorithm.matrix_c)}"
-Algorithm.floyd_algorithm
+# Algorithm.matrix_c_from_json('public/noroeste_ampliado.json')
+# puts "matrix c inicial #{Converter.matrix_to_string(Algorithm.matrix_c)}"
+# Algorithm.floyd_algorithm
 
-puts "matrix c apos floyd #{Converter.matrix_to_string(Algorithm.matrix_c2)}"
-puts "matrix p apos floyd #{Converter.matrix_to_string(Algorithm.matrix_p2)}"
-# Algorithm.generate_subgraph([1,2,3])
+# puts "matrix c apos floyd #{Converter.matrix_to_string(Algorithm.matrix_c2)}"
+# puts "matrix p apos floyd #{Converter.matrix_to_string(Algorithm.matrix_p2)}"
+# # Algorithm.generate_subgraph([1,2,3])
 
-Algorithm.teitz_bart(2)
-binding.pry
+# Algorithm.teitz_bart(2)
+# binding.pry
 #puts "matrix c2"
 # binding.pry
 # #puts Converter.matrix_to_string(Algorithm.matrix_c2)

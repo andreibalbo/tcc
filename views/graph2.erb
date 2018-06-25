@@ -77,12 +77,18 @@
               <input type="number" id="tb-centers">
               <button class="button-default" onclick="calculateTB()" style="margin: 0px 30px;">Teitz & Bart</button>
             </div>
-
+            <hr>
             <h3>Cálculo de rotas</h3>
             <input type="checkbox" id="show-each-centers-path" value="Bike">Mostrar melhor rota para cada centro<br>
-            <% unless centers.nil? || centers.size < 3 %>
-              <button class="button-default" onclick="centersPath()">Calcular melhor rota entre centros</button><br>
-            <% end %>
+              <button class="button-default" onclick="centersPath()" <%="disabled" if centers.nil? || centers.size < 3 %>>Calcular melhor rota entre centros</button><br>
+            <hr>
+            <h3>Selecionar nós para cálculo de rota</h3>
+            <div id="selected-wrapper">
+              <p>Nós Selecionados:</p>
+              <div id="selected-nodes">
+              </div>
+            </div>
+              <button class="button-default" id="custom-path-button" onclick="customPath()" disabled style="font-size: 12px;">Calcular rota customizada</button><br>
           </div>
         </div>
         <div id="nodes-info">
@@ -96,7 +102,6 @@
           <button class="button-default" id="button-txt" onclick="exportToTXT()" disabled="disabled">Exportar para TXT</button>
         </div>
       </div>
-
 
     </div>
 
@@ -149,6 +154,7 @@
     var url = '/download?type=csv';
     $.get(url, function() {
     });
+    alert('Arquivo salvo em /public/export/download.csv');
   }
 
   exportToTXT = function(){
@@ -173,6 +179,7 @@
 
 
   centersPath = function() {
+    clearAllSelected();
     var path = centers;
     var path_array = [];
     path.push(path[0]);
@@ -184,6 +191,7 @@
   };
 
   colorCentersPath = function(path_hash) {
+    clearAllSelected();
     var path_array = path_hash['path'];
     var total_dist = path_hash['dist'];
     var path_info_string = "Rota entre centros - \n";
@@ -209,11 +217,76 @@
     s.refresh();
   }
 
+  deleteSelected = function(element) {
+    var removed_id = parseInt(element.parentElement.name);
+    $("#select-nodes-add option[value=" + removed_id + "]").removeAttr('disabled');
+    var s = sigma.instances()[0];
+    s.graph.nodes()[removed_id].color = '#000';
+    $(element).parent().remove();
+    var ids = $(".selected-item").map(function() {
+      return this.name;
+    }).get();
+    ids.forEach(function(id) {
+      s.graph.nodes()[id].color = '#0f0'
+    });
+    s.refresh();
+    if ($(".selected-item").length > 1) { $("#custom-path-button").removeAttr('disabled');
+    } else { $("#custom-path-button").attr('disabled', 'disabled'); }
+  }
+
+  clearAllSelected = function() {
+    $(".selected-item").remove();
+    resetNodesColor();
+  }
+
+  dc_toggle_selected = function(id){
+    var toggle_id = id;
+    var s = sigma.instances()[0];
+    //check if is selected
+    if ($(".selected-item[name="+id+"]").length > 0){
+      $("#select-nodes-add option[value=" + toggle_id + "]").removeAttr('disabled');
+      $(".selected-item[name="+id+"]").remove();
+      if ($(".selected-item").length > 1) { $("#custom-path-button").removeAttr('disabled');
+      } else { $("#custom-path-button").attr('disabled', 'disabled'); }
+      var ids = $(".selected-item").map(function() {
+        return this.name;
+      }).get();
+      ids.forEach(function(id) {
+        s.graph.nodes()[id].color = '#0f0'
+      });
+      s.refresh();
+    }
+    else {
+      $("#select-nodes-add option[value=" + toggle_id + "]").attr('disabled', 'disabled');
+      var toggle_label = s.graph.nodes()[toggle_id].label;
+      $( "#selected-nodes" ).append("<a class='selected-item' name='"+toggle_id+"'>"+toggle_label+"<div class='hover-delete' onclick='deleteSelected(this)'>Remover</div></a>" );
+      $('#select-nodes-add').prop('selectedIndex',0);
+
+      if ($(".selected-item").length > 1) { $("#custom-path-button").removeAttr('disabled');
+      } else { $("#custom-path-button").attr('disabled', 'disabled'); }
+
+      var ids = $(".selected-item").map(function() {
+        return this.name;
+      }).get();
+      ids.forEach(function(id) {
+        s.graph.nodes()[id].color = '#0f0'
+      });
+      s.graph.nodes()[toggle_id].color = '#0f0'
+      s.graph.edges().forEach(function(e){
+        e.color = '#000';
+      });
+
+    s.refresh();
+    }
+  };
+
   sigma.parsers.json(fullname, {
     container: 'graph-container',
     type: 'canvas'
   },
     function(s) {
+
+      s.settings('doubleClickEnabled', false);
 
       s.graph.nodes().forEach(function(n) {
         instance_nodes[n.id] = n;
@@ -288,6 +361,7 @@
 
         node = e.data.node
         if (centers.includes(node.id)) {
+          clearAllSelected();
           s.graph.nodes().forEach(function(n) {
             if (proximity_hash[node.id].includes(n.id)){
               if (n.id != node.id) {n.color = '#ff9900';}
@@ -303,6 +377,11 @@
           s.refresh();
         }
 
+      });
+
+      s.bind('doubleClickNode', function(e) {
+        var nodeId = e.data.node.id;
+        dc_toggle_selected(nodeId);
       });
 
       s.bind('overEdge', function(e) {
@@ -339,18 +418,36 @@
     var url = '/best_path?arr=' + JSON.stringify(path);
     $.get(url, function(data) {
       path_hash = JSON.parse(data);
-      colorBestPath(path_hash);
+      colorBestPath(path_has, 1);
     });
   }
 
-  colorBestPath = function(path_hash) {
+  customPath = function() {
+    var ids = $(".selected-item").map(function() {
+      return this.name;
+    }).get();
+    var path = ids;
+    path.push(path[0]);
+    var url = '/best_path?arr=' + JSON.stringify(path);
+    $.get(url, function(data) {
+      path_hash = JSON.parse(data);
+      colorBestPath(path_hash, 0);
+    });
+  }
+
+  colorBestPath = function(path_hash, bool) {
     var path_array = path_hash['path'];
     var total_dist = path_hash['dist'];
 
     resetEdgesColor();
     var s = sigma.instances(0);
-    var center = path_array[0]
-    var path_info_string = "Rota das cidades do centro: " + instance_nodes[center].label +" \n";
+    var center = path_array[0];
+    if (bool == 0){
+      var path_info_string = "Rota customizada: \n";
+    }
+    else {
+      var path_info_string = "Rota das cidades do centro: " + instance_nodes[center].label +" \n";
+    }
 
     path_info_string += "Melhor rota:\n"
     path_array.forEach(function(p, i){
@@ -367,6 +464,16 @@
     });
     path_info_string += "\nDistância total da rota: "+ total_dist;
     update_node_info(path_info_string);
+
+    if (bool == 0){
+      var ids = $(".selected-item").map(function() {
+        return this.name;
+      }).get();
+      ids.forEach(function(id) {
+        s.graph.nodes()[id].color = '#0f0'
+      });
+    }
+
     s.refresh();
   }
 
@@ -417,16 +524,24 @@
     display: inline-block;
   }
 
+  #info-container h3{
+    margin: 3px;
+  }
   #nodes-list {
     background-color: white;
     width: 95%;
-    height: 40%;
+    height: 57%;
     position: relative;
     display: inline-block;
     border: 1px solid #ddd;
     border-radius: 3px;
     margin-bottom: 8px;
     font-size: 13px;
+  }
+
+  #nodes-list hr{
+    color: #ddd;
+    border-color: #ddd;
   }
 
   #tb-centers {
@@ -451,7 +566,7 @@
   #nodes-info {
     background-color: white;
     width: 95%;
-    height: 40%;
+    height: 25%;
     position: relative;
     display: inline-block;
     border: 1px solid #ddd;
@@ -479,15 +594,17 @@
   }
   #selected-wrapper p{
     margin: 5px;
+    font-size: 12px;
   }
   #selected-nodes {
     width: 100%;
-    height: 85%;
+    height: 77%;
     text-align: left;
+    overflow-y: scroll;
   }
   #menu-subgraph {
     width: 95%;
-    height: 12%;
+    height: 10%;
     position: relative;
     margin-top: 15px;
     display: inline-block;
@@ -498,11 +615,11 @@
 
   .selected-item {
     height: 15px;
-    min-width: 80px;
+    min-width: 60px;
     overflow: hidden;
     display: inline-block;
     position: relative;
-    padding: 6px;
+    padding: 2px;
     color: #ffffff;
     border: 1px solid #ffffff;
     border-radius: 2px;
@@ -516,12 +633,11 @@
     display : block;
   }
   .hover-delete{
-    top:-25px;
+    top:-18px;
     background-color: yellow;
     border: 1px solid black;
     border-radius: 2px;
     position: relative;
-    padding: 3px;
     display: none;
     color: #000;
   }
