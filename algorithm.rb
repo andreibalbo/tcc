@@ -652,7 +652,7 @@ class Algorithm
     c_proximity = center_hash_proximity
     file_data += "Abrangência dos centros:;\r\n"
     @centers.each do |c|
-      file_data += "Centro: #{@nodes[c]['label']};\r\n"
+      file_data += "Centro:;#{@nodes[c]['label']};\r\n"
       file_data += "Cidades abrangidas:;"
       c_proximity[c.to_s].each do |n|
         file_data += "#{@nodes[n]['label']};"
