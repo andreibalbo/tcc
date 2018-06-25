@@ -280,18 +280,28 @@
   };
 
   sigma.parsers.json(fullname, {
-    container: 'graph-container',
-    type: 'canvas'
-  },
+    renderer: {
+      container: 'graph-container',
+      type: 'canvas'
+    },
+    settings: {
+      enableEdgeHovering: 'true'
+    }
+   },
     function(s) {
-
       s.settings('doubleClickEnabled', false);
+      s.settings('enableEdgeHovering', true);
+
 
       s.graph.nodes().forEach(function(n) {
         instance_nodes[n.id] = n;
       });
       s.graph.edges().forEach(function(e) {
         instance_edges[e.id] = e;
+      });
+
+      s.bind('overEdge outEdge clickEdge doubleClickEdge rightClickEdge', function(e) {
+        console.log(e.type, e.data.edge, e.data.captor);
       });
 
       // First, set all nodes and edges to black
@@ -382,11 +392,12 @@
         var nodeId = e.data.node.id;
         dc_toggle_selected(nodeId);
       });
-
       s.bind('overEdge', function(e) {
-        console.log('edge: ' + e);
+        console.log('overedge: ' + e);
       });
-
+      s.bind('clickEdge', function(e) {
+        console.log('clickedge: ' + e);
+      });
     }
   );
 
@@ -411,12 +422,9 @@
 ;
     var path_array = [];
     var i = 0;
-    debugger;
     while (path[0] != center){
-      debugger;
       path = path.concat(path.splice(0,1));
     }
-    debugger
     path.push(path[0]);
     var url = '/best_path?arr=' + JSON.stringify(path);
     $.get(url, function(data) {
