@@ -1,31 +1,30 @@
 Relatório:;
 GRAFO ORIGINAL:;
-Cidades:;Sta Isabel;Planaltina;Loanda;Sta Monica;Mt Castelo;Apucarana;Aparecida;Rolandia;
+Cidades:;Mandaguari;Marialva;Maringá;Paiçandu;Sarandi;Apucarana;Arapongas;Califórnia;Cambira;Jandaia do Sul;Marilândia do Sul;Mauá da Serra;Novo Itacolomi;Sabáudia;Cambé;Ibiporã;Londrina;Pitangueiras;Rolândia;Tamarana;Ângulo;Astorga;Atalaia;Cafeara;Centenário do Sul;Colorado;Flórida;Guaraci;Iguaraçu;Itaguajé;Jaguapitã;Lobato;Lupionópolis;Mandaguaçu;Munhoz de Melo;Nossa Senhora das Graças;Nova Esperança;Presidente Castelo Branco;Santa Fé;Santa Inês;Santo Inácio;Uniflor;Alvorada do Sul;Bela Vista do Paraíso;Florestópolis;Miraselva;Porecatu;Prado Ferreira;Primeiro de Maio;Sertanópolis;Doutor Camargo;Floraí;Floresta;Itambé;Ivatuba;Ourizona;São Jorge do Ivaí;Bom Sucesso;Borrazópolis;Cruzmaltina;Faxinal;Kaloré;Marumbi;Rio Bom;Arapuã;Ariranha do Ivaí;Cândido de Abreu;Godoy Moreira;Grandes Rios;Ivaiporã;Jardim Alegre;Lidianópolis;Lunardelli;Manoel Ribas;Nova Tebas;Rio Branco do Ivaí;Rosário do Ivaí;São João do Ivaí;São Pedro do Ivaí;
 
 SUBGRAFO:
-Cidades:;Sta Isabel;Planaltina;Loanda;Sta Monica;Mt Castelo;Apucarana;Aparecida;Rolandia;
+Cidades:;Mandaguari;Marialva;Maringá;Paiçandu;Sarandi;Apucarana;Arapongas;Califórnia;Cambira;Jandaia do Sul;Marilândia do Sul;Mauá da Serra;Novo Itacolomi;Sabáudia;Cambé;Ibiporã;Londrina;Pitangueiras;Rolândia;Tamarana;Ângulo;Astorga;Atalaia;Cafeara;Centenário do Sul;Colorado;Flórida;Guaraci;Iguaraçu;Itaguajé;Jaguapitã;Lobato;Lupionópolis;Mandaguaçu;Munhoz de Melo;Nossa Senhora das Graças;Nova Esperança;Presidente Castelo Branco;Santa Fé;Santa Inês;Santo Inácio;Uniflor;Alvorada do Sul;Bela Vista do Paraíso;Florestópolis;Miraselva;Porecatu;Prado Ferreira;Primeiro de Maio;Sertanópolis;Doutor Camargo;Floraí;Floresta;Itambé;Ivatuba;Ourizona;São Jorge do Ivaí;Bom Sucesso;Borrazópolis;Cruzmaltina;Faxinal;Kaloré;Marumbi;Rio Bom;Arapuã;Ariranha do Ivaí;Cândido de Abreu;Godoy Moreira;Grandes Rios;Ivaiporã;Jardim Alegre;Lidianópolis;Lunardelli;Manoel Ribas;Nova Tebas;Rio Branco do Ivaí;Rosário do Ivaí;São João do Ivaí;São Pedro do Ivaí;
 
 Número de centros:;3;
-Cidades abrangidas:;Centro: Rolandia;
-Cidades:;Planaltina;Apucarana;Rolandia;
-Centro: Sta Isabel;
-Cidades:;Sta Isabel;Loanda;Mt Castelo;
-Centro: Sta Monica;
-Cidades:;Sta Monica;Aparecida;
+Abrangência dos centros:;\r\nCentro: Flórida;
+Cidades abrangidas:;Maringá;Paiçandu;Sarandi;Ângulo;Atalaia;Cafeara;Centenário do Sul;Colorado;Flórida;Guaraci;Iguaraçu;Itaguajé;Lobato;Lupionópolis;Mandaguaçu;Munhoz de Melo;Nossa Senhora das Graças;Nova Esperança;Presidente Castelo Branco;Santa Fé;Santa Inês;Santo Inácio;Uniflor;Doutor Camargo;Floraí;Floresta;Ivatuba;Ourizona;São Jorge do Ivaí;
+Centro: Lidianópolis;
+Cidades abrangidas:;Mauá da Serra;Itambé;Borrazópolis;Cruzmaltina;Faxinal;Kaloré;Arapuã;Ariranha do Ivaí;Cândido de Abreu;Godoy Moreira;Grandes Rios;Ivaiporã;Jardim Alegre;Lidianópolis;Lunardelli;Manoel Ribas;Nova Tebas;Rio Branco do Ivaí;Rosário do Ivaí;São João do Ivaí;São Pedro do Ivaí;
+Centro: Arapongas;
+Cidades abrangidas:;Mandaguari;Marialva;Apucarana;Arapongas;Califórnia;Cambira;Jandaia do Sul;Marilândia do Sul;Novo Itacolomi;Sabáudia;Cambé;Ibiporã;Londrina;Pitangueiras;Rolândia;Tamarana;Astorga;Jaguapitã;Alvorada do Sul;Bela Vista do Paraíso;Florestópolis;Miraselva;Porecatu;Prado Ferreira;Primeiro de Maio;Sertanópolis;Bom Sucesso;Marumbi;Rio Bom;
 
 Melhor rota entre os centros;
-Rota:;Rolandia;Sta Monica;Sta Isabel;Sta Monica;Rolandia;
-Distância total:;52;
+Rota:;Flórida;Ângulo;Iguaraçu;Astorga;Sabáudia;Arapongas;Apucarana;Novo Itacolomi;Borrazópolis;Lidianópolis;Lunardelli;São João do Ivaí;São Pedro do Ivaí;Itambé;Floresta;Maringá;Ângulo;Flórida;
+Distância total:;372;
 
 Melhor rota entre as cidades de centros:;
-Centro:;Rolandia;
-Rota:;Rolandia;Planaltina;Apucarana;Rolandia;
-Distância total:;26;
-Centro:;Sta Isabel;
-Rota:;Sta Isabel;Loanda;Mt Castelo;Sta Isabel;
-Distância total:;37;
-Centro:;Sta Monica;
-Rota:;Sta Monica;Aparecida;Sta Monica;
-Distância total:;20;
+Centro:;Flórida;
+Rota:;Flórida;Lobato;Santa Fé;Guaraci;Nossa Senhora das Graças;Cafeara;Centenário do Sul;Lupionópolis;Santo Inácio;Santa Inês;Itaguajé;Colorado;Uniflor;Nova Esperança;Presidente Castelo Branco;Floraí;São Jorge do Ivaí;Ourizona;Mandaguaçu;Maringá;Sarandi;Maringá;Paiçandu;Doutor Camargo;Ivatuba;Floresta;Maringá;Iguaraçu;Munhoz de Melo;Ângulo;Atalaia;Flórida;
+Distância total:;582;
+Centro:;Lidianópolis;
+Rota:;Lidianópolis;Lunardelli;São João do Ivaí;Godoy Moreira;São João do Ivaí;São Pedro do Ivaí;Itambé;Bom Sucesso;Marumbi;Kaloré;Borrazópolis;Cruzmaltina;Faxinal;Mauá da Serra;Faxinal;Grandes Rios;Rio Branco do Ivaí;Rosário do Ivaí;Rio Branco do Ivaí;Cândido de Abreu;Manoel Ribas;Nova Tebas;Manoel Ribas;Ariranha do Ivaí;Arapuã;Ivaiporã;Jardim Alegre;Lidianópolis;
+Distância total:;724;
+Centro:;Arapongas;
+Rota:;Arapongas;Apucarana;Cambira;Jandaia do Sul;Mandaguari;Marialva;Mandaguari;Jandaia do Sul;Marumbi;Bom Sucesso;Jandaia do Sul;Cambira;Novo Itacolomi;Rio Bom;Marilândia do Sul;Califórnia;Marilândia do Sul;Mauá da Serra;Tamarana;Londrina;Ibiporã;Londrina;Cambé;Rolândia;Cambé;Bela Vista do Paraíso;Sertanópolis;Primeiro de Maio;Alvorada do Sul;Porecatu;Florestópolis;Miraselva;Prado Ferreira;Jaguapitã;Pitangueiras;Astorga;Sabáudia;Arapongas;
+Distância total:;677;
 
-FIM;
