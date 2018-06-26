@@ -280,28 +280,17 @@
   };
 
   sigma.parsers.json(fullname, {
-    renderer: {
-      container: 'graph-container',
-      type: 'canvas'
-    },
-    settings: {
-      enableEdgeHovering: 'true'
-    }
-   },
+    container: 'graph-container',
+    type: 'canvas'
+  },
     function(s) {
       s.settings('doubleClickEnabled', false);
-      s.settings('enableEdgeHovering', true);
-
 
       s.graph.nodes().forEach(function(n) {
         instance_nodes[n.id] = n;
       });
       s.graph.edges().forEach(function(e) {
         instance_edges[e.id] = e;
-      });
-
-      s.bind('overEdge outEdge clickEdge doubleClickEdge rightClickEdge', function(e) {
-        console.log(e.type, e.data.edge, e.data.captor);
       });
 
       // First, set all nodes and edges to black
@@ -391,12 +380,6 @@
       s.bind('doubleClickNode', function(e) {
         var nodeId = e.data.node.id;
         dc_toggle_selected(nodeId);
-      });
-      s.bind('overEdge', function(e) {
-        console.log('overedge: ' + e);
-      });
-      s.bind('clickEdge', function(e) {
-        console.log('clickedge: ' + e);
       });
     }
   );
